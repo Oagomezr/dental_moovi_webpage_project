@@ -1,0 +1,71 @@
+.all-page{
+    width: 100%;
+    height: 100%;
+    top: 50px;
+    left: 0px;
+    position:relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    form{
+        height: 90%;
+        display: flex;
+        flex-direction: column;
+        width: 550px;
+        .names{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            app-names-field {
+                width: 48%;
+            }
+        }
+        .birth-gender{
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            app-date-field{
+                width: 50%;
+            }
+            app-selector-field{
+                width: 46%;
+            }
+        }
+        .celphone-password{
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            app-cel-phone{
+                width: 38%;
+            }
+            app-password{
+                width: 58%;
+            }
+        }
+
+        .update-button{
+            background-color: #a83fe1;
+            font-weight: bolder;
+            &:hover{
+                background-color: #8632b3;
+            }
+        }
+    }
+
+    .update-notice{
+        height: 40px;
+        background-color: green;
+        width: 550px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        border-radius: 10px;
+    }
+    .back-button{
+        margin-top: 10px;
+        background-color: gray;
+        color: white;
+    }
+}

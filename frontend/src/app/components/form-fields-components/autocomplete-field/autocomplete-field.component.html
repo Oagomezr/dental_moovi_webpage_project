@@ -1,0 +1,24 @@
+<mat-form-field *ngIf="disabled">
+    <mat-label >{{disabledLabel}}</mat-label>
+    <input matInput [disabled]="true">
+  </mat-form-field>
+  
+  <mat-form-field *ngIf="!disabled">
+    <input
+      type="text" 
+      [placeholder]="label" 
+      matInput 
+      [matAutocomplete]="auto" 
+      (input)="search($event)" 
+      [formControl]="myControl"
+      (blur)="isOptionSelected()">
+    <mat-label>{{label}}</mat-label>
+    <mat-autocomplete requireSelection #auto="matAutocomplete">
+      <mat-option *ngFor="let option of options" [value]="option.description" (onSelectionChange)="selectOption(option.id)">
+        {{ option.description }}
+      </mat-option>
+    </mat-autocomplete>
+    <mat-error *ngIf="myControl.invalid && myControl.touched">
+      Debes seleccionar una opción.
+    </mat-error>
+  </mat-form-field>

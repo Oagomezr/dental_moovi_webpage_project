@@ -1,0 +1,15 @@
+<ul class="lvl-0">
+    <ng-template #recursiveList let-categories>
+        <li *ngFor="let category of categories" class="categories">
+            <a [href]="'/category/'+category.categoryAndParents" [ngClass]="'a'+(category.categoryAndParents.length-1)">
+                <span>{{ category.categoryAndParents[0] }}</span>
+                <i class="material-icons" *ngIf="category.childrenCategories?.length > 0">chevron_right</i>
+            </a>
+            
+            <ul *ngIf="category.childrenCategories?.length > 0" [ngClass]="'lvl-'+category.categoryAndParents.length">
+                <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: category.childrenCategories }"></ng-container>
+            </ul>
+        </li>
+    </ng-template>
+    <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: categories }"></ng-container>
+</ul>

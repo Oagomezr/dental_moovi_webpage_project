@@ -1,0 +1,63 @@
+<div *ngIf="!confirm" class="all-page">
+    <h2>REGISTRO</h2>
+    <form (ngSubmit)="sendCode()" [formGroup]="userFormGroup">
+    
+        <div class="names">
+            <app-names-field
+            [labelName]="'Nombres'"
+            [formName]="userFormGroup.controls.firstName"
+            ></app-names-field>
+
+            <app-names-field
+            [labelName]="'Apellidos'"
+            [formName]="userFormGroup.controls.lastName"
+            ></app-names-field>
+        </div>
+        
+        <mat-form-field>
+            <mat-label >Correo electrónico</mat-label>
+            <input type="email" matInput formControlName="email">
+            <mat-error *ngIf="userFormGroup.get('email')?.errors?.['required']">Por favor ingresa el correo electrónico</mat-error>
+            <mat-error *ngIf="userFormGroup.get('email')?.errors?.['email']">El email debe contener un &#64;</mat-error>
+            <mat-error *ngIf="userFormGroup.get('email')?.errors?.['uniqueValue']">Ese email actualmente se encuentra registrado</mat-error>
+        </mat-form-field>
+
+        <div class="birth-gender">
+            <app-date-field 
+            [formBirthDate]="userFormGroup.controls.birthdate"
+            [labelName]="'Fecha de nacimiento(opcional)'"
+            ></app-date-field>
+
+            <app-selector-field 
+            [formSelector]="userFormGroup.controls.gender"
+            [fields]="genders"
+            [labelName]="'Genero'"
+            [errorLabel]="'Por favor seleccione un genero'"
+            ></app-selector-field>
+        </div>
+
+        <div class="celphone-password">
+            <app-cel-phone-field [formCelphone]="userFormGroup.controls.celPhone"></app-cel-phone-field>
+            <app-password-field [formPassword]="userFormGroup.controls.password"></app-password-field>
+        </div> 
+    
+        <button class="signup-button" type="submit" mat-raised-button color="primary" [disabled]="userFormGroup.invalid">Crear usuario</button>
+    </form>
+</div>
+    
+<app-confirm-code-field 
+*ngIf="confirm && !showRegisterOK"
+[email]="email" 
+(confirm)="confirmCode($event)" 
+(reSend)="sendCode()"
+[badCode]="badCode"
+></app-confirm-code-field>
+
+
+<div class="registerOK" *ngIf="showRegisterOK">
+    <img src="assets/images/registerOK.png" alt="registerOK">
+    <h2>Registro exitoso</h2>
+    <p>Te estamos redirigiendo al inicio de sesión</p>
+</div>
+
+

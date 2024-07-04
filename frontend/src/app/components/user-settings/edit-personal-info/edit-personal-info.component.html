@@ -1,0 +1,39 @@
+<div class="all-page" *ngIf="response">
+    <h2>Información del usuario</h2>
+    <h3 class="update-notice" *ngIf="isUpdated">Usuario Actualizado con exito.</h3>
+    <form (ngSubmit)="update()" [formGroup]="userFormGroup">
+    
+        <div class="names">
+            <app-names-field
+            [labelName]="'Nombres'"
+            [formName]="userFormGroup.controls.firstName"
+            ></app-names-field>
+
+            <app-names-field
+            [labelName]="'Apellidos'"
+            [formName]="userFormGroup.controls.lastName"
+            ></app-names-field>
+        </div>
+
+        <div class="birth-gender">
+            
+            <app-date-field 
+            [formBirthDate]="userFormGroup.controls.birthdate"
+            [labelName]="'Fecha de nacimiento(opcional)'"
+            ></app-date-field>
+
+            <app-selector-field 
+            [formSelector]="userFormGroup.controls.gender"
+            [fields]="genders"
+            [labelName]="'Genero'"
+            [errorLabel]="'Por favor seleccione un genero'"
+            ></app-selector-field>
+            
+        </div>
+
+        <app-cel-phone-field [formCelphone]="userFormGroup.controls.celPhone"></app-cel-phone-field>
+    
+        <button type="submit" mat-raised-button color="primary" class="update-button">Actualizar información</button>
+        <a class="back-button" mat-raised-button color="secondary" href="settings">Regresar</a>
+    </form>
+</div>

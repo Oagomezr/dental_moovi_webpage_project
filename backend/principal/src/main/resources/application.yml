@@ -1,0 +1,63 @@
+spring:
+
+    datasource:
+        url: ${DB_URL}
+        username: ${DB_USERNAME}
+        password: ${DB_PW}
+        driver-class-name: ${JDBC_DRIVER}
+
+    sql:
+        init:
+            mode: always
+            continue-on-error: false
+
+    mail:
+        host: ${MAIL_HOST}
+        port: ${MAIL_PORT}
+        protocol: smtp
+        username: ${EMAIL}
+        password: ${MAIL_PW}
+        otherPassword: ${MAIL_PW_2}
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+
+    session:
+        store-type: jdbc
+        jdbc:
+            initialize-schema: always
+            schema: classpath:org/springframework/session/jdbc/schema-@@platform@@.sql
+            table-name: SPRING_SESSION
+    
+    servlet:
+        multipart:
+            max-file-size: 10MB
+            max-request-size: 10MB
+
+server:
+    port: ${SPRING_PORT_SERVER}
+    address: ${SPRING_ADDRESS_SERVER}
+    domainUrl: ${DOMAIN_URL}
+    domainName: ${DOMAIN}
+    emailService: ${EMAIL_SERVICE}
+    servlet:
+        session:
+            cookie:
+                http-only: true
+            timeout: 20m
+
+jwt:
+    secret: ${JWT_SECRET}
+    expiration: ${JWT_TIME}
+    accessTokenByCookieName: ${JWT_COOKIE}
+
+logging:
+    level:
+        org:
+            springframework:
+                data:
+                    jdbc:
+                        core: DEBUG

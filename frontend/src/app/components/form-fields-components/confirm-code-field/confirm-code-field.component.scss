@@ -1,0 +1,53 @@
+.confirmation-code{
+    width: 100%;
+    top: 50px;
+    left: 0px;
+    position:relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    .code{
+        width: 70%;
+        display: grid;
+        grid-template-columns: repeat(6, 1fr); 
+        gap: 10px;
+        input{
+            background-color: #ccc;
+            text-align: center;
+            width: 80%;
+            aspect-ratio: 1/1;
+            font-size: xx-large;
+            border: none;
+            border-radius: 20px;
+        }
+    }
+
+    .buttons{
+        display: flex;
+        flex-direction: column;
+        button{
+            margin-top: 30px;
+            background-color: #a83fe1;
+            font-weight: bolder;
+            &:hover{
+                background-color: #8632b3;
+            }
+
+            &:disabled {
+                background-color: #ccc; 
+                cursor: not-allowed;
+            }
+        }
+    }
+    .badCode{
+        height: 40px;
+        background-color: red;
+        width: 550px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        border-radius: 10px;
+    }
+}

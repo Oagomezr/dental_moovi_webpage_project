@@ -1,0 +1,14 @@
+<div class="confirmation-code">
+    <h2>Acabamos de enviar un codigo de confirmación a tu correo:</h2>
+    <h3 style="font-weight: bolder;">{{ email }}</h3>
+    <h3 *ngIf="badCode" class="badCode">Codigo enviado incorrecto</h3>
+    <div class="code">
+        <input [(ngModel)]="inputValues[index]" *ngFor="let index of [0, 1, 2, 3, 4, 5]" type="text" maxlength="7" (input)="typeCode(index, $event)" />
+    </div>
+    <div class="buttons" >
+        <button mat-raised-button color="primary" (click)="confirmCode()">Confirmar</button>
+        <button mat-raised-button color="primary" [disabled]="waitTime > 0" (click)="resendCode()">
+            Reenviar codigo <span id="tiempoRestante" *ngIf="waitTime > 0">en {{waitTime}} segundos</span>
+        </button>
+    </div>
+</div>

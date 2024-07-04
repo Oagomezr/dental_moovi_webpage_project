@@ -1,0 +1,22 @@
+<mat-tab-group class="manage-orders">
+    <mat-tab label="Pendientes" class="tap">
+        <app-order-panel
+        [data]="pending"
+        [typeOrder]="'Pendiente'"
+        ></app-order-panel>
+    </mat-tab>
+
+    <mat-tab label="Completados">
+        <app-order-panel
+        [data]="complete"
+        [typeOrder]="'Completado'"
+        ></app-order-panel>
+    </mat-tab>
+
+    <mat-tab label="Cancelados">
+        <app-order-panel
+        [data]="cancel"
+        [typeOrder]="'Cancelado'"
+        ></app-order-panel>
+    </mat-tab>
+</mat-tab-group>

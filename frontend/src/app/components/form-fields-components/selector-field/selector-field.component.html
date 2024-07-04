@@ -1,0 +1,10 @@
+<mat-form-field appearance="fill">
+    <mat-label>{{labelName}}</mat-label>
+    <select id="selector" style="display: none;"></select> <!-- It result the problem only temporatly -->
+    <mat-select id="selector" [formControl]="formSelector"> <!-- Id Its the same above-->
+        <mat-option *ngFor="let field of fields" [value]="field.id">
+            {{ field.description }}
+        </mat-option>
+    </mat-select>
+    <mat-error>{{errorLabel}}</mat-error>
+</mat-form-field>

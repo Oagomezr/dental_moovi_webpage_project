@@ -1,0 +1,12 @@
+<div class="category-direction">
+    <div class="category-section">
+        <a href="/" class="init-location">INICIO</a>
+        <span class="location-category">
+            <div>{{ currentPageOrProduct }}</div> <i class="material-icons" *ngIf="currentPageOrProduct">arrow_right</i>
+            <div *ngFor="let parentCategory of locationCategory; let i = index">
+                <i class="material-icons">arrow_right</i><a [href]="'/category/'+locationCategory.slice(i)" [ngClass]="'location-'+(locationCategory.length-1-i)">{{parentCategory}}</a>
+            </div>
+        </span>
+    </div>
+    <div [ngClass]="'location-'+(locationCategory.length-1)" id="current-section">{{locationCategory[0]}}</div>
+</div>

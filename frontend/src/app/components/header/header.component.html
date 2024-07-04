@@ -1,0 +1,92 @@
+<header>
+    <a id="logo" href="">
+        <img src="assets/images/logoDentalmoovi.png" alt="logo Dentalmoovi">
+    </a>
+    <nav>
+        <div class="top-nav">
+            <div class="search" id="search">
+                <div class="search-button">
+                    <input type="text" id="search-products" (input)="searchProduct($event)" class="search-input" placeholder="Buscar" #search>
+                    <div class="search-icon" (click)="selectInputSearch(search.value)" (keydown.enter)="selectInputSearch(search.value)">
+                        <i class="fas fa-search"></i>
+                    </div>
+                </div>
+                <div *ngIf="products != []" class="products-found">
+                    <a class="products" *ngFor="let product of products" [href]="'/product/'+product.nameProduct">
+                        <div class="img-container">
+                            <img *ngIf="product.images.length == 0" src="assets/images/productWithoutImage.png" alt="">
+                            <img *ngIf="product.images.length > 0" [src]="'data:image/'+product.images[0].contentType+';base64,'+product.images[0].imageBase64" alt="">
+                        </div>
+                        <div class="name-and-price-container">
+                            <p>{{product.nameProduct}}</p>
+                            <div style="font-weight: bolder;">$ {{product.unitPrice}}</div>
+                        </div>
+                    </a>
+                    
+                    <a id="show-all-products" [href]="'/category/'+search.value+',Buscar'" *ngIf="search.value.length > 1 && products?.length == 7" >
+                        Mostrar todos los resultados
+                    </a>
+
+                    <span *ngIf="notFoundProducts">
+                        Producto no encontrado
+                    </span>
+                    
+                </div>
+                
+            </div>
+            
+            <div class="user-contacts">
+                <div class="contacs">
+                    <div class="phone-address">
+                        <a href="https://www.google.com/maps/place/Dental+Moovi/@4.7435868,-74.1001813,17z/data=!3m1!4b1!4m6!3m5!1s0x8e3f85d246ba4a25:0x7dfc6ec87b67bf5e!8m2!3d4.7435868!4d-74.0976064!16s%2Fg%2F11p5c8_j9v?entry=ttu"> <i class="fas fa-map-marker-alt" id="location-icon"></i> <span> Av Cra 104 #140a - 52 piso 2</span></a>
+                        <a href="#"> <i class="fa-brands fa-square-whatsapp" id="whatsapp-icon"></i> <span> 3144536435</span></a>
+                    </div>
+                    <div class="social-media">
+                        <a href="https://www.facebook.com/people/Dental-Moovi/100063699296329/" target="_blank">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="https://www.instagram.com/dentalmoovi/?hl=es" target="_blank">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+                <div *ngIf="!isAuthenticate" class="user-options">
+                    <a href="/login" class="login">INICIAR SESIÓN</a>
+                    <a href="/signup" class="signup">REGISTRARSE</a>
+                </div>
+                <div *ngIf="isAuthenticate" class="user-options">
+                    <div class="profile" (mouseover)="showBoxProfile(true)" (mouseout)="showBoxProfile(false)" (focus)="showBoxProducts(true)" (blur)="showBoxProducts(false)">
+                        <button>
+                            <i class="material-icons">person</i>{{name}}<i class="material-icons">expand_more</i>
+                        </button>
+                        <app-hover-box-profile [hidden]="showHoverBoxProfile"
+                        [nameUser]="name"></app-hover-box-profile>
+                    </div>
+                    <button *ngIf="!isAdmin">Mis compras</button>
+                    <a *ngIf="isAdmin" href="/manageOrders" >Mis pedidos</a>
+                    <button (click)="logout()">Salir <i class="material-icons">logout</i></button>
+                </div>
+            </div>
+        </div>
+        <div class="bottom-nav">
+            <div class="menu">
+                <a class="inicio" href="/">INICIO</a>
+                <div class="products" (mouseover)="showBoxProducts(true)" (mouseout)="showBoxProducts(false)" (focus)="showBoxProducts(true)" (blur)="showBoxProducts(false)">
+                    <button>
+                        PRODUCTOS 
+                        <i class="material-icons" [ngClass]="{'expanded-icon': !showHoverBoxProducts, 'no-expanded-icon': showHoverBoxProducts}">expand_more</i>
+                    </button>
+                    <app-hover-box-products [hidden]="showHoverBoxProducts" [categories]="categories"></app-hover-box-products>
+                </div>
+                <a>QUIENES SOMOS</a>
+                <a>SEDE</a>
+                <a>CONTACTENOS</a>
+            </div>
+            <div class="cart" (mouseover)="showBoxCart(true)" (mouseout)="showBoxCart(false)" (focus)="showBoxProducts(true)" (blur)="showBoxProducts(false)">
+                <app-cart-badge [amountOfProducts]="cartSer.cartResponse.amountOfProducts"></app-cart-badge>
+                <app-hover-box-cart [hidden]="showHoverBoxCart" [cartResponse]="cartSer.cartResponse"></app-hover-box-cart>
+            </div>
+        </div>
+    </nav>
+</header>
+

@@ -1,0 +1,21 @@
+<mat-form-field appearance="fill">
+    <mat-label >{{labelName}}</mat-label>
+    <input matInput [formControl]="formName">
+    <mat-error *ngIf="formName.errors?.['required']; else comasF">Por favor ingresa algo en el campo.</mat-error>
+
+    <ng-template #comasF>
+        <mat-error *ngIf="formName.value?.includes(','); else numberF">No pueden tener comas.</mat-error>
+    </ng-template>
+
+    <ng-template #numberF>
+        <mat-error *ngIf="containsNumber(formName.value); else specialCharacters">No pueden tener numeros</mat-error>
+    </ng-template>
+
+    <ng-template #specialCharacters>
+        <mat-error *ngIf="formName.errors?.['pattern']; else incompleteF">No pueden tener #, $, ~, etc.</mat-error>
+    </ng-template>
+
+    <ng-template #incompleteF>
+        <mat-error *ngIf="formName.errors?.['minlength']">Debe tener almenos 3 caracteres.</mat-error>
+    </ng-template>
+</mat-form-field>

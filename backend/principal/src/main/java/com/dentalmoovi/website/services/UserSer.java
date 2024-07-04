@@ -1,0 +1,473 @@
+package com.dentalmoovi.website.services;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
+import org.springframework.mail.MailException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.dentalmoovi.website.Utils;
+import com.dentalmoovi.website.models.dtos.AddressesDTO;
+import com.dentalmoovi.website.models.dtos.EmailData;
+import com.dentalmoovi.website.models.dtos.MessageDTO;
+import com.dentalmoovi.website.models.dtos.UserDTO;
+import com.dentalmoovi.website.models.entities.ActivityLogs;
+import com.dentalmoovi.website.models.entities.Addresses;
+import com.dentalmoovi.website.models.entities.Roles;
+import com.dentalmoovi.website.models.entities.Users;
+import com.dentalmoovi.website.models.entities.enums.Departaments;
+import com.dentalmoovi.website.models.entities.enums.MunicipalyCity;
+import com.dentalmoovi.website.models.entities.enums.RolesList;
+import com.dentalmoovi.website.models.exceptions.ALotTriesException;
+import com.dentalmoovi.website.models.exceptions.AlreadyExistException;
+import com.dentalmoovi.website.models.exceptions.IncorrectException;
+import com.dentalmoovi.website.models.responses.AddressesResponse;
+import com.dentalmoovi.website.repositories.ActivityLogsRep;
+import com.dentalmoovi.website.repositories.AddressesRep;
+import com.dentalmoovi.website.repositories.RolesRep;
+import com.dentalmoovi.website.repositories.UserRep;
+import com.dentalmoovi.website.repositories.enums.DepartamentsRep;
+import com.dentalmoovi.website.repositories.enums.MunicipalyRep;
+import com.dentalmoovi.website.security.LoginDTO;
+import com.dentalmoovi.website.security.MainUser;
+import com.dentalmoovi.website.security.PwDTO;
+import com.dentalmoovi.website.services.cache.CacheSer;
+
+@Service
+public class UserSer {
+
+    private final CacheSer cacheSer;
+    private final EmailSer emailSer;
+    private final UserRep userRep;
+    private final RolesRep rolesRep;
+    private final AddressesRep addressesRep;
+    private final MunicipalyRep municipalyRep;
+    private final DepartamentsRep departamentsRep;
+    private final ActivityLogsRep activityLogsRep;
+    private final RestTemplate restTemplate;
+
+    private static final BCryptPasswordEncoder pwe = new BCryptPasswordEncoder();
+
+    @Value("${spring.mail.otherPassword}")
+    private String ref; 
+
+    @Value("${server.emailService}")
+    private String emailServiceUrl;
+
+    public UserSer(CacheSer cacheSer, EmailSer emailSer, UserRep userRep, RolesRep rolesRep, AddressesRep addressesRep,
+            MunicipalyRep municipalyRep, DepartamentsRep departamentsRep, ActivityLogsRep activityLogsRep, RestTemplate restTemplate) {
+        this.cacheSer = cacheSer;
+        this.emailSer = emailSer;
+        this.userRep = userRep;
+        this.rolesRep = rolesRep;
+        this.addressesRep = addressesRep;
+        this.municipalyRep = municipalyRep;
+        this.departamentsRep = departamentsRep;
+        this.activityLogsRep = activityLogsRep;
+        this.restTemplate = restTemplate;
+    }
+
+    public void sendEmailNotification(String email, String subject, String body) {
+        String retrictReplay = cacheSer.getFromReplayCodeRestrict(email);
+        if (retrictReplay !=null && retrictReplay.equals(email)) return;
+
+        String formattedNumber = Utils.generateRandom6Number();
+
+        body += formattedNumber;
+        
+        cacheSer.addToOrUpdateRegistrationCache(email, formattedNumber);
+        cacheSer.addToOrUpdateReplayCodeRestrict(email, email);
+
+        EmailData emailData = new EmailData(email, subject, body);
+
+        restTemplate.postForEntity(emailServiceUrl+"/send", emailData, Void.class);
+
+        /* try {
+            emailSer.sendEmail(email, subject, body);
+        } catch (Exception e) {
+            // Manage the exception in case it cannot send the email
+            e.printStackTrace();
+        } */
+    }
+
+    public String createUser(UserDTO userDTO) throws RuntimeException {
+
+        class CreateUser{
+
+            /* ¡¡PLEASE PAY CLOSE ATTENTION ONLY THIS "createUser()" METHOD TO UNDERSTAND THIS SERVICE!! */ 
+            String createUser() throws RuntimeException{
+                //verify if email exist
+                if(checkEmailExists(userDTO.email(), true)) 
+                    throw new AlreadyExistException("That user already exist");
+
+                validateCode(userDTO.email(), userDTO.code());
+
+                //create default role
+                Roles defaultRole = rolesRep.findByRole(RolesList.USER_ROLE)
+                    .orElseThrow(() -> new RuntimeException("Role not found"));
+
+                //encrypt the password
+                String hashedPassword = pwe.encode(userDTO.password()); 
+
+                //set and save user
+                Users newUser = 
+                    new Users(
+                        null, userDTO.firstName(), userDTO.lastName(), userDTO.email(), userDTO.celPhone(), 
+                        userDTO.birthdate(), userDTO.gender(), hashedPassword, null, null);
+                newUser.addRole(defaultRole);
+                
+                newUser = userRep.save(newUser);
+
+                ActivityLogs log = new ActivityLogs(null, "El usuario se registro en la plataforma", LocalDateTime.now(), newUser.id());
+                activityLogsRep.save(log);
+
+                removeCache(userDTO.email());
+
+                return "User Created";
+            }
+        }
+
+        CreateUser innerClass = new CreateUser();
+        return innerClass.createUser();
+    }
+
+    //verify if user exist
+    public boolean checkEmailExists(String value, boolean signup) {
+        boolean result = userRep.existsByEmailIgnoreCase(value);
+        return signup ? result : !result;
+    }
+
+    public MessageDTO getName(){
+        return new MessageDTO(getUserAuthenticated().firstName());
+    }
+
+    public Users getUserAuthenticated(){
+        return Utils.getUserByEmail(getUsername(), userRep);
+    }
+
+    public UserDTO getUserAuthDTO(){
+        Users user = getUserAuthenticated();
+        return new UserDTO(null, user.firstName(), user.lastName(), user.email(), user.celPhone(), user.birthdate(), user.gender(), null, null);
+    }
+
+    public MainUser getMainUser(String email){
+        Users user = Utils.getUserByEmail(email, userRep);
+        return MainUser.build(user, rolesRep, ref);
+    }
+
+    @Cacheable("getUserDetails")
+    public String getUserDetails(String email){
+        MainUser mainUser = getMainUser(email);
+        boolean isAdmin = mainUser.getAuthorities().stream()
+            .anyMatch(grantedAuthority -> grantedAuthority.getAuthority()
+                .equals(RolesList.ADMIN_ROLE.name()));
+        if (isAdmin) return "A" + mainUser.getCacheRef();
+
+        return mainUser.getCacheRef();
+    }
+
+    @CacheEvict(value = "getUserByEmail", key = "#userDTO.email")
+    public MessageDTO updateUserInfo(UserDTO userDTO) throws IllegalArgumentException{
+        Users user = getUserAuthenticated();
+
+        //numberUpdates
+        Utils.addTriesCache("update",user.id().toString(),3, cacheSer);
+
+        Users userUpdated = new Users(
+            user.id(), userDTO.firstName(), userDTO.lastName(), user.email(), 
+            userDTO.celPhone(), userDTO.birthdate(), userDTO.gender(), 
+            user.password(), user.roles(), user.addresses());
+        
+        String logMessage = compareUpdateUserData(user,userUpdated);
+
+        if (!logMessage.equals("El usuario actualizo sus datos personales: ")) {
+            ActivityLogs log = new ActivityLogs(null, logMessage, LocalDateTime.now(), user.id());
+            activityLogsRep.save(log);
+            userRep.save(userUpdated);
+        }
+
+        return new MessageDTO("User updated");
+    }
+    
+    public AddressesResponse getAddresses(){
+        Users user = getUserAuthenticated();
+        List<AddressesDTO> addressesDTO = getAddressesFromDatabase(user);
+        return new AddressesResponse(addressesDTO);
+    }
+
+    @Cacheable(value = "getAddresses", key = "#user.id()")
+    private List<AddressesDTO> getAddressesFromDatabase(Users user){
+        List<Long> idsAddresses = new ArrayList<>(user.getAddressesIds());
+        List<AddressesDTO> addressesDTO = new ArrayList<>();
+        
+        idsAddresses.stream().forEach(id ->{
+
+            Addresses address = addressesRep.findById(id)
+                .orElseThrow(() -> new RuntimeException("Address not found"));
+
+            MunicipalyCity municipaly = municipalyRep.findById(address.idMunicipalyCity())
+                .orElseThrow(() -> new RuntimeException("Municipaly not found"));
+
+            Departaments departament = departamentsRep.findById(municipaly.id_departament())
+                .orElseThrow(() -> new RuntimeException("Departament not found"));
+
+            AddressesDTO addressDTO = new AddressesDTO(
+                address.id(), address.address(), address.phone(), address.description(), 
+                municipaly.name(), departament.name(), 0);
+                
+            addressesDTO.add(addressDTO);
+        });
+
+        return addressesDTO;
+    }
+
+    public MessageDTO createAddress(AddressesDTO addressDTO){
+            
+        Users user = getUserAuthenticated();
+
+        //numberUpdates
+        Utils.addTriesCache("createAddress",user.id().toString(),3, cacheSer);
+
+        Addresses address = new Addresses(
+            null, addressDTO.address(), addressDTO.phone(), addressDTO.description(), addressDTO.idMunicipaly());
+
+        return saveAddress(user, address);
+    }
+
+    @CacheEvict(value = "getAddresses", key = "#user.id()")
+    private MessageDTO saveAddress(Users user, Addresses address){
+
+        MunicipalyCity municipaly = Utils.getMunicipalyCity(address.idMunicipalyCity(), municipalyRep);
+        
+        Departaments departament = Utils.getDepartament(municipaly.id_departament(), departamentsRep);
+        
+        address = addressesRep.save(address);
+
+        String logMessage = "Agrego una nueva direccion: "+address.address()+" "+municipaly.name()+" "+departament.name();
+
+        ActivityLogs log = new ActivityLogs(null, logMessage, LocalDateTime.now(), user.id());
+        activityLogsRep.save(log);
+        
+        user.addAddress(address);
+        userRep.save(user);
+
+        return new MessageDTO("Address created");
+    }
+
+    @CacheEvict(value = "getAddresses", key = "#user.id()")
+    public MessageDTO updateAddress(AddressesDTO addressDTO){
+
+        Users user = getUserAuthenticated();
+
+        Addresses newAddress = new Addresses(
+            addressDTO.id(), addressDTO.address(), addressDTO.phone(), 
+            addressDTO.description(), addressDTO.idMunicipaly());
+
+        return updateAddress(user, newAddress);
+    }
+
+    @Caching(evict = {
+        @CacheEvict(value = "getAddresses", key = "#user.id()"),
+        @CacheEvict(value = "getAddress", key = "#newAddress.id()")
+    })
+    private MessageDTO updateAddress(Users user, Addresses newAddress){
+        //numberUpdates
+        Utils.addTriesCache("updateAddress",user.id().toString(),3, cacheSer);
+
+        Addresses currentAddress = Utils.getAddress(newAddress.id(), addressesRep);
+
+        String logMessage = compareUpdateAddressData(currentAddress, newAddress);
+
+        if (!logMessage.equals("El usuario actualizo la direccion: ")) {
+            ActivityLogs log = new ActivityLogs(null, logMessage, LocalDateTime.now(), user.id());
+            activityLogsRep.save(log);
+            addressesRep.save( newAddress );
+        }
+
+        return new MessageDTO("Address updated");
+    }
+
+    @CacheEvict(value = "getAddresses", key = "#id")
+    public MessageDTO deleteAddress(long id){
+
+        Addresses address = addressesRep.findById(id)
+            .orElseThrow(() -> new RuntimeException("Address not found"));
+
+        MunicipalyCity municipaly = Utils.getMunicipalyCity(address.idMunicipalyCity(), municipalyRep);
+
+        Departaments departament = Utils.getDepartament(municipaly.id_departament(), departamentsRep);
+
+        String logMessage = "Elimino la direccion: "+address.address()+" "+municipaly.name()+" "+departament.name();
+        
+        Users user = getUserAuthenticated();
+
+        //numberUpdates
+        Utils.addTriesCache("deleteAddress",user.id().toString(),2, cacheSer);
+
+        ActivityLogs log = new ActivityLogs(null, logMessage, LocalDateTime.now(), user.id());
+        activityLogsRep.save(log);
+
+        return deleteAddress(user, id);
+    }
+
+    @CacheEvict(value = "getAddresses", key = "#user.id()")
+    private MessageDTO deleteAddress(Users user, Long id){
+        user.deleteAddress(id);
+        userRep.save(user);
+        addressesRep.deleteById(id);
+        return new MessageDTO("Address deleted");
+    }
+
+    public MessageDTO changePw(PwDTO dto){
+        Users user = getUserAuthenticated();
+        boolean valid = pwe.matches(dto.oldP(), user.password());
+
+        if (valid){
+            ActivityLogs log = new ActivityLogs(null, "El usuario cambio la contraseña", LocalDateTime.now(), user.id());
+            activityLogsRep.save(log);
+            return updatePw(user, dto.newP());
+        }
+        
+        throw new IncorrectException("Incorrect Password");
+    }
+
+    public MessageDTO rememberPw(LoginDTO userCredentials){ 
+
+        validateCode(userCredentials.userName(), userCredentials.code());
+
+        String newPw = Utils.generateRandomString(10);
+
+        String subject = "Recuperación de contraseña";
+        String body = "Dental Moovi recibió una solicitud de recuperación de contraseña.\n\n"+
+                        "Su nueva contraseña es: " + newPw + "\n\n"+
+                        "Puedes cambiarla cuando quieras a travez de la pagina Web de Dental Moovi";
+
+        Users user = Utils.getUserByEmail(userCredentials.userName(), userRep);
+
+        try {
+            emailSer.sendEmail(userCredentials.userName(), subject, body);
+            removeCache(userCredentials.userName());
+
+            ActivityLogs log = new ActivityLogs(null, "El usuario solicito recordatorio de contraseña", LocalDateTime.now(), user.id());
+            activityLogsRep.save(log);
+
+            return updatePw(user, newPw);
+        } catch (MailException e) {
+            // Manage the exception in case it cannot send the email
+            e.printStackTrace();
+            throw new MailException(e.getMessage()) {};
+        }
+    }
+
+    public void validateCode(String key, String codeEntered){
+        //get verification code
+        String code = cacheSer.getFromRegistrationCache(key);
+
+        //get tries
+        Integer tries = cacheSer.getFromNumberTries(key);
+        tries = tries == null ? 0 : tries;
+
+        if (tries > 3) 
+            throw new ALotTriesException("Many tries");
+
+        //verify if code sended is equals the verification code
+        if(!codeEntered.equals(code)) {
+            cacheSer.addToOrUpdateNumberTries(key, tries+1);
+            throw new IncorrectException("The code: "+code+" is incorrect");
+        }
+
+        cacheSer.removeFromNumberTries(key);
+    }
+
+    public void removeCache(String key){
+        cacheSer.removeFromRegistrationCache(key);
+    }
+    
+    public Users getUser(long id){
+        return userRep.findById(id)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    private String getUsername(){
+        Authentication authentication = 
+            SecurityContextHolder.getContext().getAuthentication();
+
+        // Verify if the user is authenticated
+        if (authentication != null && authentication.isAuthenticated()) 
+            return authentication.getName(); //Get username
+        
+        throw new NoSuchElementException("The user is not authenticated");
+    }
+
+    @CacheEvict(value = "getUserByEmail", key = "#user.email")
+    private MessageDTO updatePw(Users user, String pw){
+        String pwNew = pwe.encode(pw);
+        
+        userRep.save(new Users(
+            user.id(), user.firstName(), user.lastName(), user.email(), user.celPhone(), 
+            user.birthdate(), user.gender(), pwNew, user.roles(), user.addresses()));
+        
+        return new MessageDTO("Password updated successfully");
+    }
+
+    private String compareUpdateUserData(Users current, Users updated){
+        StringBuilder log = new StringBuilder();
+        int count = 1;
+    
+        count += compareAndAppendChange(log, count, "nombre", current.firstName(), updated.firstName());
+        count += compareAndAppendChange(log, count, "apellido", current.lastName(), updated.lastName());
+        count += compareAndAppendChange(log, count, "número de celular", current.celPhone(), updated.celPhone());
+        count += compareAndAppendChange(log, count, "fecha de nacimiento", current.birthdate(), updated.birthdate());
+        
+        compareAndAppendChange(log, count, "género", current.gender(), updated.gender());
+    
+        return "El usuario actualizo sus datos personales: " + log.toString();
+    }
+
+    private String compareUpdateAddressData(Addresses current, Addresses updated){
+        StringBuilder log = new StringBuilder();
+        int count = 1;
+    
+        count += compareAndAppendChange(log, count, "Direccion", current.address(), updated.address());
+        count += compareAndAppendChange(log, count, "Telefono", current.phone(), updated.phone());
+        count += compareAndAppendChange(log, count, "Descripcion", current.description(), updated.description());
+
+        MunicipalyCity currentMunicipaly = Utils.getMunicipalyCity(current.idMunicipalyCity(), municipalyRep);
+
+        Departaments currentDepartament = Utils.getDepartament(currentMunicipaly.id_departament(), departamentsRep);
+
+        MunicipalyCity newMunicipaly = Utils.getMunicipalyCity(updated.idMunicipalyCity(), municipalyRep);
+
+        Departaments newDepartament = Utils.getDepartament(newMunicipaly.id_departament(), departamentsRep);
+
+        count += compareAndAppendChange(log, count, "municipio", currentMunicipaly.name(), newMunicipaly.name());
+        compareAndAppendChange(log, count, "departamento", currentDepartament.name(), newDepartament.name());
+    
+        return "El usuario actualizo la direccion: "+ log.toString();
+    }
+    
+    private int compareAndAppendChange(StringBuilder log, int count, String field, Object currentValue, Object updatedValue) {
+        if (!currentValue.equals(updatedValue)) {
+            log .append(count)
+                .append(". El Campo '")
+                .append(field)
+                .append("' fue cambiado de '")
+                .append(currentValue)
+                .append("' a '")
+                .append(updatedValue)
+                .append("'\n");
+                return 1;
+        }
+        return 0;
+    }
+}

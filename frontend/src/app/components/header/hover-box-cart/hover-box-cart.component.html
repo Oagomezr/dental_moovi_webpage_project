@@ -1,0 +1,37 @@
+<div class="cart-box">
+    <div class="products">
+        <div class="product" *ngFor="let product of cartResponse.data; let i = index">
+            <div class="image-product">
+                <img *ngIf="product.image == null" src="assets/images/productWithoutImage.png" alt="">
+                <img *ngIf="product.image != null" [src]="'data:image/'+product.image.contentType+';base64,'+product.image.imageBase64" alt="">
+            </div>
+            <div class="product-info">
+                <div class="name">
+                    {{ product.productName }}
+                </div>
+                <div class="prize-calc">
+                    <input class="amount" type="number" min="1" [max]="5" step="1" [value]="product.amount" (input)="updateAmounts($event.target, i)">
+                    <span *ngIf="!isAdmin">{{ "X $"+product.prize.toLocaleString()}}</span>
+                    <span *ngIf="isAdmin">
+                        {{" X " }}
+                        <input class="prize" type="number" min="50" step="50" [value]="product.prize" (input)="updatePrize($event.target, i)">
+                    </span>
+                    {{" = $"+product.subtotal.toLocaleString() }}
+                </div>
+            </div>
+    
+            <button class="close-button" (click)="deleteElem(i)">
+                <i class="material-icons">close</i>
+            </button>
+        </div>
+    </div>
+    <div class="subtotal">
+        <div>Total:</div>
+        <div>{{ "$"+cartResponse.total.toLocaleString() }}</div>
+    </div>
+    <div class="purchase-options">
+        <button (click)="purchase()">
+            Finalizar Compra
+        </button>
+    </div>
+</div>

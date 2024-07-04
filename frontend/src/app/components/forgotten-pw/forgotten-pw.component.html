@@ -1,0 +1,28 @@
+<div class="all-page">
+    <h2 *ngIf="!confirm">RECUPERAR CONTRASEÑA</h2>
+    <form [formGroup]="emailFormGroup">
+        <div *ngIf="!confirm" class="pw-field">
+            <mat-form-field>
+                <mat-label >Correo electrónico</mat-label>
+                <input matInput formControlName="userName">
+                <mat-error *ngIf="emailFormGroup.get('userName')?.errors?.['required']">Por favor ingresa un correo electrónico</mat-error>
+                <mat-error *ngIf="emailFormGroup.get('userName')?.errors?.['uniqueValue']">No encontrado </mat-error>
+            </mat-form-field>
+            <button (click)="sendCode()" mat-raised-button color="primary" class="rpw-button">Enviar</button>
+        </div>
+        
+        <app-confirm-code-field 
+        *ngIf="confirm && !showOK"
+        [email]="email" 
+        (confirm)="confirmCode($event)" 
+        (reSend)="sendCode()"
+        [badCode]="badCode"
+        ></app-confirm-code-field>
+
+        <div class="showOK" *ngIf="showOK">
+            <img src="assets/images/registerOK.png" alt="registerOK">
+            <h2>Acabamos de enviarte tu nueva contraseña a tu correo electrónico</h2>
+        </div>
+        
+    </form>
+</div>

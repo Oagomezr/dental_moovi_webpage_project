@@ -1,0 +1,40 @@
+server:
+    port: ${SPRING_PORT_SERVER}
+    address: ${SPRING_ADDRESS_SERVER}
+    error:
+        include-message: always
+        include-binding-errors: always
+
+spring:
+
+    config:
+        #change the extraInfoExample to extraInfo with its credentials
+        import: optional:extraInfo.yml 
+
+    datasource:
+        url: ${DB_URL_TEST}
+        username: ${DB_USERNAME}
+        password: ${DB_PW}
+        driver-class-name: com.mysql.cj.jdbc.Driver
+
+    sql:
+        init:
+            mode: always
+            continue-on-error: false
+
+    mail:
+        host: ${mailHost}
+        port: 587
+        protocol: smtp
+        username: ${email}
+        password: ${mailPassword}
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+            
+logging:
+    level:
+        org.springframework.web: DEBUG

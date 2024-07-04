@@ -1,0 +1,98 @@
+.all-page{
+    padding-top: 10px;
+    width: 100%;
+    top: 50px;
+    left: 0px;
+    position:relative;
+    display: flex;
+    align-items: center;
+    justify-content:flex-start;
+    flex-direction: column;
+    background-color: white;
+
+    h4{
+        padding: 10px;
+        color: white;
+        border-radius: 15px;
+    }
+
+    .setting{
+        text-decoration: none;
+        color: black;
+        position: relative;
+        display: flex;
+        background-color: rgba(211, 211, 211, 0.5);
+        width: 70%;
+        height: 80px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        .icon{
+            height: 100%;
+            width: 6%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .navigate_next{
+            position: absolute;
+            right: 0;
+        }
+        &:hover{
+            background-color: rgba(211, 211, 211);
+            .icon{
+                color: #a83fe1;
+            }
+        }
+    }
+    .change-password{
+        display: flex;
+        box-sizing: border-box;
+        border: rgba(211, 211, 211) solid 4px;
+        height: 220px;
+        width: 70%;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        .icon{
+            width: 6%;
+            height: 20%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .fields{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            h3{
+                margin-right: 20px;
+            }
+        }
+
+        .option-info{
+            width: 50%;
+        }
+
+        .button-change-pw{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 30%;
+            margin-top: 35px;
+            button{
+                margin-bottom: 10px;
+                background-color: #a83fe1;
+                font-weight: bolder;
+                &:hover{
+                    background-color: #8632b3;
+                }
+
+                &:disabled {
+                    background-color: #ccc; 
+                    cursor: not-allowed;
+                }
+            }
+        }
+    }
+}
+

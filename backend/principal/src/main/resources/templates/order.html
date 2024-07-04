@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Cotización</title>
+    <style>
+        body {
+            position: relative;
+            font-family: Arial, sans-serif;
+        }
+
+        .header{
+            position: relative;
+            height: 160px;
+            width: 100%;
+        }
+
+        .image{
+            height: 100%;
+            width: 160px;
+            text-align: center;
+        }
+
+        .dental-moovi-logo{
+            position: relative;
+            width: 160px;
+        }
+
+        .order-number{
+            padding-top: 3mm;
+            color: #a83fe1;
+            font-weight: bold;
+            width: 160px;
+            text-align: center;
+        }
+
+        .customer-data{
+            text-align:center;
+            width: 100%;
+            height: 100%;
+            border-collapse: collapse;
+        }
+
+        .customer-data th{
+            text-align: right;
+            padding-left: 1mm;
+            padding-right: 1mm;
+            height: 40px;
+        }
+
+        .customer-data td{
+            text-align: left;
+            height: 40px;
+        }
+
+        .products-data{
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .products-data th{
+            box-sizing: border-box;
+            border: solid #02a1ff 2px;
+            height: 40px;
+            color: #2e53fe;
+        }
+
+        .products-data td{
+            box-sizing: border-box;
+            border-left: solid #02a1ff 2px;
+            border-right: solid #02a1ff 2px;
+            height: 30px;
+        }
+        .aditional-info{
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .aditional-info th{
+            box-sizing: border-box;
+            
+            height: 25px;
+        }
+        .aditional-info td{
+            box-sizing: border-box;
+            height: 25px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <table class="customer-data" aria-describedby="customer-data">
+            <tr>
+                <td rowspan="5" class="image">
+                    <img class="dental-moovi-logo" src="https://i.ibb.co/cgdG8Mv/logo-Dentalmoovi.png" alt="logo Dentalmoovi"/>
+                    <div class="order-number" >Cotización N°:  <span th:text="${order.orderNumber}"/></div>
+                </td>
+            </tr>
+            <tr>
+                <th scope="col">
+                    Cliente:
+                </th>
+                <td>
+                    <span th:text="${order.customerName}"/>
+                    <br/>
+                    <span th:text="${order.customerLastName}"/>
+                </td>
+                <th scope="col">
+                    Departamento:
+                </th>
+                <td>
+                    <span th:text="${order.departament}"/>
+                </td>
+            </tr>
+            <tr>
+                <th scope="col">
+                    Celular:
+                </th>
+                <td>
+                    <span th:text="${order.celPhone}"/>
+                </td>
+                <th scope="col">
+                    Ciudad o localidad:
+                </th>
+                <td>
+                    <span th:text="${order.location}"/>
+                </td>
+            </tr>
+            <tr>
+                <th scope="col">
+                    Fecha:
+                </th>
+                <td>
+                    <span th:text="${order.date}"/>
+                </td>
+                <th scope="col">
+                    Dirección:
+                </th>
+                <td>
+                    <span th:text="${order.address}"/>
+                </td>
+            </tr>
+            <tr>
+                <th scope="col">
+                    Hora:
+                </th>
+                <td>
+                    <span th:text="${order.hour}"/>
+                </td>
+                <th scope="col">
+                    Empresa:
+                </th>
+                <td>
+                    DentalEnterprise
+                </td>
+            </tr>
+        </table>
+    </div>
+    <table class="products-data" ria-describedby="products-data">
+        <thead>
+            <tr>
+                <th>Nombre del producto</th>
+                <th style="text-align: center;">Precio</th>
+                <th style="text-align: center;">Cantidad</th>
+                <th style="text-align: center;">SubTotal</th> 
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="product : ${order.products}">
+                <td><span th:text="${product.productName}"/></td>
+                <td style="text-align: center;">$<span th:text="${product.prizePDF}"/></td>
+                <td style="text-align: center;"><span th:text="${product.amount}"/></td>
+                <td style="text-align: center;">$<span th:text="${product.subtotalPDF}"/></td> 
+            </tr>
+            <tr>
+                <td style="border-bottom: solid #02a1ff 2px;"></td>
+                <td style="border-bottom: solid #02a1ff 2px;"></td>
+                <td style="border-bottom: solid #02a1ff 2px;"></td>
+                <td style="border-bottom: solid #02a1ff 2px;"></td>
+            </tr>
+            <tr>
+                <td style="border: none;"></td>
+                <td style="border: none;"></td>
+                <td style="text-align: right; border: none; font-weight: bold;">Total:</td>
+                <td style="text-align: center; border: none; font-weight: bold;">
+                    $<span th:text="${order.total}"/>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="aditional-info">
+        <tr><td></td><td></td></tr>
+        <tr>
+            <th scope="col">
+                Terminos y condiciones:
+            </th>
+            <td></td>
+        </tr>
+        <tr>
+            <td style="font-size: small;">
+                Devoluciones solo para cambios, no reembolsos.
+            </td>
+            <td style="font-size: small; text-align: right;">
+                Av cra 104 #140a - 52 Piso 2
+            </td>
+        </tr>
+        <tr>
+            <td style="font-size: small;">
+                Despues de 10 dias habiles no se aceptan devoluciones.
+            </td>
+            <td style="font-size: small; text-align: right;">
+                Ventas.dentalmoovi@gmail.com
+            </td>
+        </tr>
+        <tr>
+            <td style="font-size: small;">
+                Favor enviar soporte de pago por whatsapp o correo electrónico.
+            </td>
+            <td style="font-size: small; text-align: right;">
+                Whatsapp: 314-453-6435
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th scope="col">
+                Formas de pago:
+            </th>
+            <td style="
+                border-bottom: solid 2px black;
+                width: 45%;
+            "></td>
+        </tr>
+        <tr>
+            <td style="font-size: small;">
+                Bancolombia: 54700002813
+            </td>
+            <td style="text-align: center;">
+                Firma
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

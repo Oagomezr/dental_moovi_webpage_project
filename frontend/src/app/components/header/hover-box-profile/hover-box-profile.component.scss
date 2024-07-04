@@ -1,0 +1,49 @@
+.profile-box{
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    flex-direction: column;
+    font-size: large;
+    height: 50px;
+    min-width: 130px;
+    text-decoration: none;
+    background-color: rgb(233, 233, 233);
+    padding-right: 6px ;
+    border-radius: 10px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2),-2px -2px 4px rgba(0, 0, 0, 0.2);
+
+    &:hover{
+        background-color: lightgray;
+        
+        .welcome{
+            .my-profile{
+                .profile{
+                    color: #a83fe1;
+                }
+            }
+        }
+    }
+
+    .welcome{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+        color: black;
+        .my-profile{
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: space-between;
+            height: 35px;
+            .profile{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size:medium;
+                color: gray;
+            }
+        }
+    }
+}

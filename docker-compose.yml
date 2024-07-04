@@ -1,0 +1,64 @@
+services:
+  dbdental:
+    image: mysql:lts
+    ports:
+      - ${DB_PORT}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  dentalback:
+    build: ./BackEnd/website
+    environment:
+      SPRING_PORT_SERVER: ${SPRING_PORT_SERVER}
+      SPRING_ADDRESS_SERVER: ${SPRING_ADDRESS_SERVER}
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      EMAIL: ${EMAIL}
+      MAIL_PW: ${MAIL_PW}
+      MAIL_PW_2: ${MAIL_PW_2}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_COOKIE: ${JWT_COOKIE}
+      JWT_TIME: ${JWT_TIME}
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PW: ${DB_PW}
+      DB_URL_TEST: ${DB_URL_TEST}
+      JDBC_DRIVER: ${JDBC_DRIVER}
+      DOMAIN_URL: ${DOMAIN_URL}
+      DOMAIN: ${DOMAIN}
+    restart: always
+    depends_on:
+      dbdental:
+        condition: service_healthy
+    networks:
+      - internal
+
+  dentalfront:
+    build: ./FrontEnd/dental-moovi
+    ports:
+      - ${FRONT_PORT}
+    depends_on:
+      - dentalback
+    networks:
+      - internal
+      - external
+
+networks:
+  internal:
+    driver: bridge
+  external:
+    driver: bridge
+
+volumes:
+  mysql_data:

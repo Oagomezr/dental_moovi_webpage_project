@@ -1,0 +1,57 @@
+<form class="content-component" (ngSubmit)="purchase()">
+    <div class="addresses-part">
+        <h3 *ngIf="selectNotice">Por favor selecciona una dirección para enviar el pedido</h3>
+        <h2>Elige la dirección de envió</h2>
+        <div class="addresses">
+            <label *ngFor="let address of addresses; let i = index" class="address-box">
+                <div class="input-box">
+                    <input type="radio" name="address" [value]="address.id" [(ngModel)]="selectedAddressId">
+                </div>
+                <div class="address-info">
+                    <div class="icon">
+                        <i class="material-icons">location_on</i>
+                    </div>
+                    <div class="option-info">
+                        <h2>{{ address.address }}</h2>
+                        <p>{{ address.departament+" "+address.location }}</p>
+                    </div>
+                </div>
+            </label>
+            <button (click)="addAddress()" class="setting" href="settings/addresses/address">
+                <div class="icon">
+                    <i class="material-icons">add_circle</i>
+                </div>
+                <div class="option-info">
+                    <h2>Añadir dirección</h2>
+                    <p>Añade una nueva dirección de envio</p>
+                </div>
+            </button>
+        </div>
+    </div>
+    <div class="details-part">
+        <div class="purchases">
+            <h2 class="summarize-title" style="color: #2e53fe;">
+                Resumen de compra
+            </h2>
+            <div class="purchase-summarize">
+                <div class="amount-purchases">
+                    Pagas {{" "+ cartSer.cartResponse.amountOfProducts}} articulos
+                </div>
+                <div class="total-purchases">
+                    {{ cartSer.cartResponse.total | currency:'':'symbol':'1.0-0' }}
+                </div>
+            </div>
+        </div>
+        <a class="fields notices" href="">
+            <i class="material-icons">admin_panel_settings</i> Políticas de privacidad
+        </a>
+        <a class="fields notices" href="">
+            <i class="material-icons">local_shipping</i> Políticas de envío
+        </a>
+        <a class="fields notices" href="">
+            <i class="material-icons">production_quantity_limits</i> Garantía del producto
+        </a>
+        
+        <button type="submit" class="fields" mat-raised-button color="primary" style="margin-top: 10px;">Comprar</button>
+    </div>
+</form>

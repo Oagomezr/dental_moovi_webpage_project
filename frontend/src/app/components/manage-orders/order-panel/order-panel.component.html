@@ -1,0 +1,44 @@
+
+<div class="manage-orders">
+    <div class="panel">
+
+        <div *ngFor="let order of data; let i = index" class="orders">
+            <button (click)="getPdf(order.idOrder!, order.firstName!)"
+            [ngClass]="{'selected': buttonSelected === order.idOrder,'unselected': buttonSelected !== order.idOrder}">
+
+                <div *ngIf="isAdmin">{{ order.firstName }}</div>
+                <div *ngIf="isAdmin">{{ order.lastName }}</div>
+                <div *ngIf="!isAdmin">{{typeOrder +" "+ (i+1) }}</div>
+                <div>{{ order.date }}</div>
+                <div *ngIf="order.departament !== 'Bogotá D.C.'">{{ order.departament }}</div>
+                <div>{{ order.municipaly }}</div>
+                <div>{{ order.address }}</div>
+            </button>
+
+            <div *ngIf="isAdmin" class="edit-buttons">
+                <button [ngClass]="{'pending': typeOrder == 'Pendiente','no-pending':  typeOrder != 'Pendiente'}">
+                    <i class="material-icons">pending_actions</i>
+                </button>
+                <button [ngClass]="{'complete': typeOrder == 'Completado','no-complete':  typeOrder != 'Completado'}">
+                    <i class="material-icons">task</i>
+                </button>
+                <button [ngClass]="{'cancel': typeOrder == 'Cancelado','no-cancel':  typeOrder != 'Cancelado'}">
+                    <i class="material-icons">cancel</i>
+                </button>
+            </div>
+        </div>
+        
+
+        
+    </div>
+    <div class="viewer">
+        <ngx-extended-pdf-viewer 
+        *ngIf="pdfSrc != null"
+        [src]="pdfSrc"
+        useBrowserLocale="true" 
+        [filenameForDownload]="pdfName"
+        [zoom]="'page-width'"
+        [textLayer]="true">
+        </ngx-extended-pdf-viewer>
+    </div>
+</div>

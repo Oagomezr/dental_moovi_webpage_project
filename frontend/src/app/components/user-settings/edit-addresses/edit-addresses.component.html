@@ -1,0 +1,30 @@
+<div class="all-page">
+    <h3 class="delete-notice" *ngIf="isDelete">Domicilio eliminado con exito</h3>
+    <a class="setting" href="settings/addresses/address">
+        <div class="icon">
+            <i class="material-icons">add_circle</i>
+        </div>
+        <div class="option-info">
+            <h2>Añadir dirección</h2>
+            <p>Añade una nueva dirección de envio</p>
+        </div>
+    </a>
+
+    <div *ngFor="let address of addresses; let i = index" class="addresses-box">
+        <button (click)="selectAddress(i)" class="address-info">
+            <div class="icon">
+                <i class="material-icons">location_on</i>
+            </div>
+            <div class="option-info">
+                <h2>{{ address.address }}</h2>
+                <p>{{ address.departament+" "+address.location }}</p>
+            </div>
+        </button>
+        
+        <button class="delete" (click)="openDialog(i)">
+            <i class="material-icons">delete</i>
+        </button>
+    </div>
+
+    <a class="back-button" mat-raised-button color="secondary" href="settings">Regresar</a>
+</div>

@@ -1,0 +1,9 @@
+<button 
+    mat-icon-button matSuffix 
+    (click)="togglePasswordVisibility($event)" 
+    [attr.aria-label]="'Hide password'" 
+    [attr.aria-pressed]="hide" 
+    [ngClass]="{'hidden': hide, 'visible': !hide}"
+    >
+    <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+</button>

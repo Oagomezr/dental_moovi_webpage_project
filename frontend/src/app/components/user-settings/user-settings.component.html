@@ -1,0 +1,55 @@
+<div class="all-page">
+    <h4 *ngIf="pwUpdated" style="background-color: green;">Contraseña actualizada con exito</h4>
+    <h4 *ngIf="pwError" style="background-color: red;">Contraseña actual incorrecta</h4>
+    <a class="personal-info setting" href="settings/userInfo">
+        <div class="icon">
+            <i class="material-icons">account_circle</i>
+        </div>
+        <div class="option-info">
+            <h2>Información personal</h2>
+            <p>Información de la cuenta como nombre, numero de telefono, entre otros</p>
+        </div>
+        <div class="icon navigate_next">
+            <i class="material-icons">navigate_next</i>
+        </div>
+    </a>
+    <a class="addresses setting" href="settings/addresses">
+        <div class="icon">
+            <i class="material-icons">location_on</i>
+        </div>
+        <div class="option-info">
+            <h2>Direcciones</h2>
+            <p>Información de tus direcciones de envio</p>
+        </div>
+        <div class="icon navigate_next">
+            <i class="material-icons">navigate_next</i>
+        </div>
+    </a>
+    <form (ngSubmit)="changePassword()" [formGroup]="changePasswordFormGroup" class="change-password">
+        <div class="icon">
+            <i class="material-icons">lock</i>
+        </div>
+        <div class="option-info">
+            <h2>Cambio de contraseña</h2>
+            <div class="current-password fields">
+                <h3>Contraseña actual:</h3>
+
+                <app-password-field 
+                [formPassword]="changePasswordFormGroup.controls.oldP"
+                ></app-password-field>
+
+            </div>
+            <div class="new-password fields">
+                <h3>Nueva contraseña:</h3>
+
+                <app-password-field 
+                [formPassword]="changePasswordFormGroup.controls.newP"
+                ></app-password-field>
+
+            </div>
+        </div>
+        <div class="button-change-pw">
+            <button type="submit" mat-raised-button color="primary" class="pw-button">Cambiar Contraseña</button>
+        </div>
+    </form>
+</div>

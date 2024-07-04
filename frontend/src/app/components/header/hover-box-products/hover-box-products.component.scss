@@ -1,0 +1,101 @@
+$width-categories: 210px 150px 150px 150px;
+$colors: #2e53fe #a83fe1 #1cd1e2 #02a1ff;
+
+.lvl-0{
+    width: 210px;
+    top: 0;
+    background-color: white;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2),-2px -2px 4px rgba(0, 0, 0, 0.2); 
+    position: relative;
+    list-style: none;
+    padding: 0;
+    z-index: 1;
+    margin-top: 0;
+    margin-bottom: 0;
+    border-radius: 3px;
+
+    .categories{
+        position: relative;
+        font-size: small;
+        font-family: 'Roboto', sans-serif;
+        background-color: white;
+        padding-left: 5px;
+        margin-bottom: 4px;
+        z-index: 1;
+        
+        a{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            color:darkslategray;
+            &:hover{
+                i{
+                    transition: transform 0.9s ease, opacity 0.45s ease;
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+            &:not(:hover) {
+                i {
+                    transition: transform 0.4s ease, opacity 0.4s ease;
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        }
+
+        &:hover {
+            .lvl-1{
+                display: block;
+            }
+            background-color: #2e53fe;
+            color: white;
+            border-radius: 3px;
+            .a0{
+                color: white;
+            }
+        }
+    }
+
+    @for $i from 1 through 3{
+        .lvl-#{$i}{
+            $before-width: nth($width-categories, $i);
+            $current-width: nth($width-categories, $i+1);
+            $current-color: nth($colors, $i+1);
+            position: absolute;
+            top: 0;
+            left:  $before-width+1px;
+            display: none;
+            background-color: white;
+            list-style: none;
+            padding: 0;
+            width: $current-width;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2),-2px -2px 4px rgba(0, 0, 0, 0.2); 
+            margin-top: 0;
+            z-index: 2;
+            
+            
+            li{
+                .a#{$i}{
+                    color:darkslategray;
+                }
+                
+                border-bottom: 1px solid #00000017;
+                margin-bottom: 0;
+                padding-bottom: 1px;
+                padding-top: 1px;
+                &:hover {
+                    background-color: $current-color;
+                    
+                    .lvl-#{$i+1}{
+                        display: block;
+                    }
+                    .a#{$i}{
+                        color: white;
+                    }
+                }
+            }
+        }
+    }
+}

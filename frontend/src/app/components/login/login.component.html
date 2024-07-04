@@ -1,0 +1,35 @@
+<div *ngIf="!adminAuthentication" class="all-page">
+    <h3 class="shopping notice" *ngIf="shoppingNotice">Para completar la compra, es necesario iniciar sesión o registrarse</h3>
+    <h2>INICIO DE SESIÓN</h2>
+    <h3 class="authError notice" *ngIf="errorAuthentication">Usuario y/o contraseña incorrecto</h3>
+    <h3 class="registration notice" *ngIf="registrationNotice">Ingresa por favor con el usuario que acabas de registrar</h3>
+    <h3 class="registration notice" *ngIf="session">Sesión iniciada con exito</h3>
+    <form (ngSubmit)="authenticate()" [formGroup]="userAuthFormGroup">
+        <mat-form-field>
+            <mat-label >Correo electrónico</mat-label>
+            <input matInput formControlName="userName">
+            <mat-error *ngIf="userAuthFormGroup.get('userName')?.errors?.['required']">Por favor ingresa un correo electrónico</mat-error>
+            <mat-error *ngIf="userAuthFormGroup.get('userName')?.errors?.['uniqueValue']">No encontrado </mat-error>
+        </mat-form-field>
+        <app-password-field [formPassword]="userAuthFormGroup.controls.password"></app-password-field>
+        <button type="submit" mat-raised-button color="primary" class="login-button">Iniciar sesión</button>
+        <a href="/pwForgotten" style="text-align: center;">¿Olvidaste tu contraseña?</a>
+    </form>
+    <div class="registration-button">
+        <a href="/signup"> Registrarse </a>
+    </div>
+</div>
+
+<app-confirm-code-field 
+*ngIf="adminAuthentication && !showOK"
+[email]="email" 
+(confirm)="confirmCode($event)" 
+(reSend)="authenticate()"
+[badCode]="badCode"
+></app-confirm-code-field>
+
+<div class="showOK" *ngIf="showOK">
+    <img src="assets/images/registerOK.png" alt="registerOK">
+    <h2>Bienvenido</h2>
+    <p>Te estamos redirigiendo a la pagina principal</p>
+</div>

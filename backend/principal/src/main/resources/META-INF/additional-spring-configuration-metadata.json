@@ -1,0 +1,47 @@
+{"properties": [
+  {
+    "name": "jwt.access-token-by-cookie-name",
+    "type": "java.lang.String",
+    "description": "A description for 'jwt.access-token-by-cookie-name'"
+  },
+  {
+    "name": "jwt.secret",
+    "type": "java.lang.String",
+    "description": "A description for 'jwt.secret'"
+  },
+  {
+    "name": "jwt.expiration",
+    "type": "java.lang.String",
+    "description": "A description for 'jwt.expiration'"
+  },
+  {
+    "name": "spring.session.store-type",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.session.store-type'"
+  },
+  {
+    "name": "spring.mail.otherPassword",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.mail.otherPassword'"
+  },
+  {
+    "name": "server.frontUrl",
+    "type": "java.lang.String",
+    "description": "A description for 'server.frontUrl'"
+  },
+  {
+    "name": "server.domainUrl",
+    "type": "java.lang.String",
+    "description": "A description for 'server.domainUrl'"
+  },
+  {
+    "name": "server.domainName",
+    "type": "java.lang.String",
+    "description": "A description for 'server.domainName'"
+  },
+  {
+    "name": "server.emailService",
+    "type": "java.lang.String",
+    "description": "A description for 'server.emailService'"
+  }
+]}

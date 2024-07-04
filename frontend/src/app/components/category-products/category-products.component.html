@@ -1,0 +1,52 @@
+<app-direction [currentPageOrProduct]="currentPage" [locationCategory]="locationCategory"></app-direction>
+<div class="search-products">
+    <ul class="lvl-0">
+        <li *ngIf="isAdmin" class="addParent">
+            <button (click)="openDialog('-', 0)"><i class="material-icons">add</i></button>
+        </li>
+        <li *ngIf="isAdmin" class="inputTextCategory">
+            <input type="text" [(ngModel)]="textCategory" />
+        </li>
+        <ng-template #recursiveList let-categories>
+            
+            <li *ngFor="let category of categories">
+                
+                <div>
+                    <div class="categoryOptions">
+                        <a [href]="'/category/'+category.categoryAndParents" 
+                            [ngClass]="{'currentCategory': locationCategory[0] == category.categoryAndParents[0], 'otherCategory': locationCategory[0] != category.categoryAndParents[0]}"
+                            >
+                            {{ category.categoryAndParents[0] }}<span *ngIf="locationCategory[0] == category.categoryAndParents[0]">&nbsp;{{'<-'}}</span>
+                        </a>
+                        <div class="options" *ngIf="isAdmin" [ngClass]="'lvl-'+(category.categoryAndParents.length - 1)">
+                            <button title="Cambiar nombre" class="optionsIcons" (click)="openDialog(category.categoryAndParents[0], 1)"><i class="material-icons">edit</i></button>
+                            <button title="Eliminar Categoria" class="optionsIcons" (click)="openDialog(category.categoryAndParents[0], 2)"><i class="material-icons">delete</i></button>
+                            <button title="Añadir subCategoria" class="optionsIcons" (click)="openDialog(category.categoryAndParents[0], 3)"><i class="material-icons">add</i></button>
+                            <button title="Mover categoria" class="optionsIcons" (click)="openDialog(category.categoryAndParents[0], 4)"><i class="material-icons">subdirectory_arrow_right</i></button>
+                        </div>
+                        
+                    </div>
+                    
+                    
+                    <button class="expandedIcon" (click)="toggleSubcategories(category.categoryAndParents, false)" *ngIf="category.childrenCategories?.length > 0">
+                        <i class="material-icons" [ngClass]="{'expanded-icon': expandedCategories[category.categoryAndParents[0]], 'no-expanded-icon': !expandedCategories[category.categoryAndParents[0]]}">expand_more</i>
+                    </button>
+                </div>
+
+                
+                
+                <ul *ngIf="category.childrenCategories?.length > 0 && expandedCategories[category.categoryAndParents[0]]" [ngClass]="'lvl-'+(category.categoryAndParents.length)">
+                    <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: category.childrenCategories }"></ng-container>
+                </ul>
+            </li>
+            
+        </ng-template>
+        
+        <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: categories }"></ng-container>
+
+        <li *ngIf="isAdmin" class="inputTextCategory">
+            <input type="text" [(ngModel)]="textCategory" />
+        </li>
+    </ul>
+    <app-products (sendCurrentPage)="receiveCurrentPage($event)" [locationCategory]="locationCategory"></app-products>
+</div>

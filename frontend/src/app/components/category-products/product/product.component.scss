@@ -1,0 +1,233 @@
+.product{
+    width: 90%;
+    margin: 1% 5%;
+    padding: 0.5% 0%;
+    display: flex;
+
+    .product-images{
+        width: 70px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        
+        .imageContainer{
+            width: 90%;
+            margin-bottom: 10%;
+            aspect-ratio: 1/1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            img{
+                max-width: 100%;
+                max-height: 100%;
+                height: auto;
+            }
+        }
+        
+        button{
+            width: 90%;
+            aspect-ratio: 1/1;
+            margin-bottom: 10%;
+            box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2),-1px -1px 2px rgba(0, 0, 0, 0.2); 
+            &:hover{
+                box-shadow: 2px 2px 4px #00ff1171,-2px -2px 4px #00ff1171; 
+                i{
+                    color: green;
+                }
+                color: green;
+            }
+            border: none;
+            background-color: white;
+            cursor: pointer;
+        }
+        .currentImg{
+            box-shadow: 2px 2px 4px #1cd1e2,-2px -2px 4px #1cd1e2; 
+        }
+        .otherImg{
+            box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2),-1px -1px 2px rgba(0, 0, 0, 0.2); 
+        }
+    }
+
+    .image{
+        position: relative;
+        flex: 1; 
+        aspect-ratio: 1/1;
+        display: flex;
+        justify-content: center;
+        align-items:flex-start;
+        img{
+            width: 98%;
+            padding: 0 1%;
+        }
+
+        .imageOptions{
+            width: 100%;
+            position: absolute;
+            display: flex;
+            justify-content:space-around;
+            .setMainImage{
+                text-align: center;
+                border: none;
+                background-color: #a83fe1;
+                color: white;
+                cursor: pointer;
+                border-radius: 10px;
+                height: 30px;
+                padding: 0 10px;
+                &:hover{
+                    font-weight: bolder;
+                    background-color: white;
+                    color: #a83fe1;
+                    border: solid 3px #a83fe1;
+                }
+            }
+
+            .deleteImage{
+                text-align: center;
+                border: none;
+                background-color: red;
+                color: white;
+                cursor: pointer;
+                border-radius: 10px;
+                height: 30px;
+                padding: 0 10px;
+                &:hover{
+                    font-weight: bolder;
+                    background-color: white;
+                    color: red;
+                    border: solid 3px red;
+                }
+            }
+        }
+    }
+
+    .characteristics{
+        width: 40%;
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2), -2px -2px 4px rgba(0, 0, 0, 0.2); 
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+
+        .editOptions{
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            background-color: #2e54fe;
+            border: none;
+        }
+
+        .edit-button{
+            margin-left: 7px;
+        }
+
+        app-visibility-icon{
+            right: 0;
+            bottom: 0;
+            position: absolute;
+            z-index: 1;
+        }
+
+        .category-button{
+            left: 0;
+            bottom: 0;
+            position: absolute;
+            z-index: 1;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            background-color: #fe2ed8;
+            border: none;
+        }
+
+        .product-name{
+            display: flex;
+            align-items: center;
+            justify-content: left;
+            text-decoration: none;
+            margin: 3% 5%;
+            height: auto;
+            font-size: 30px;
+
+            color: black;
+        }
+
+        .product-description{
+            display: flex;
+            align-items: center;
+            justify-content: left;
+            text-decoration: none;
+            margin: 0 5%;
+            height: auto;
+            p{
+                text-align: left;
+                color: darkslategray;
+            }
+        }
+        .product-price{
+            display: flex;
+            align-items: center;
+            justify-content: left;
+            text-decoration: none;
+            margin: 0 5%;
+            font-weight: bolder;
+            font-size: 25px;
+            height: auto;
+            color: black;
+        }
+        .product-stock{
+            display: flex;
+            align-items: center;
+            justify-content: left;
+            text-decoration: none;
+            margin: 0 5%;
+        }
+
+        .product-category{
+            display: flex;
+            align-items: center;
+            justify-content: left;
+            text-decoration: none;
+            margin: 0 5%;
+        }
+
+        .product-add-cart{
+            background-color: yellow;
+            position: relative;
+            display: flex;
+            align-items:flex-start;
+            justify-content:space-between;
+            text-decoration: none;
+            height: 40px;
+            margin-left: 5%;
+            margin-right: 5%;
+            margin-bottom: 5%;
+            button{
+                width: 67%;
+                margin-bottom: 5%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content:center;
+                i{
+                    padding-right: 5px;
+                }
+            }
+            input{
+                width: 30%;
+                box-sizing: border-box;
+                height: 100%;
+                text-align: center;
+            }
+
+            input[type="number"]::-webkit-inner-spin-button,
+            input[type="number"]::-webkit-outer-spin-button {
+                opacity: 1;
+                height: 37px;
+            }
+
+        }
+        
+    }
+}

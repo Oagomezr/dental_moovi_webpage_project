@@ -1,0 +1,32 @@
+.all-page{
+    width: 100%;
+    top: 50px;
+    left: 0px;
+    position:relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    .pw-field{
+        display: flex;
+        flex-direction: column;
+        width: 550px;
+    }
+
+    .showOK{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .rpw-button{
+        margin-bottom: 10px;
+        background-color: #a83fe1;
+        font-weight: bolder;
+        &:hover{
+            background-color: #8632b3;
+        }
+    }
+}

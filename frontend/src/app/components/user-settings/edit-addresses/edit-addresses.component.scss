@@ -1,0 +1,100 @@
+.all-page{
+    padding-top: 10px;
+    width: 100%;
+    top: 50px;
+    left: 0px;
+    position:relative;
+    display: flex;
+    align-items: center;
+    justify-content:flex-start;
+    flex-direction: column;
+    background-color: white;
+    .setting{
+        text-decoration: none;
+        color: black;
+        position: relative;
+        display: flex;
+        background-color: rgba(211, 211, 211, 0.5);
+        width: 70%;
+        height: 80px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        .icon{
+            height: 100%;
+            width: 6%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        &:hover{
+            background-color: rgba(211, 211, 211);
+            .icon{
+                color: #a83fe1;
+            }
+        }
+    }
+    .back-button{
+        margin-top: 10px;
+        background-color: gray;
+        color: white;
+    }
+    .addresses-box{
+        position: relative;
+        width: 70%;
+        height: 80px;
+        background-color: rgba(211, 211, 211, 0.5);
+        border-radius: 10px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        .address-info{
+            text-decoration: none;
+            border: none;
+            color: black;
+            display: flex;
+            background-color: rgba(0, 0, 0, 0);
+            width: 95%;
+            height: 80px;
+            
+            cursor: pointer;
+            .icon{
+                height: 100%;
+                width: 6%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            p{
+                text-align: left;
+            }
+        }
+        .delete{
+            border:none;
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0);
+            cursor: pointer;
+            &:hover{
+                color: red;
+                background-color: rgba(0, 0, 0, 0.3);
+            }
+        }
+        &:hover{
+            background-color: rgba(211, 211, 211);
+            .icon{
+                color: #a83fe1;
+            }
+        }
+    }
+
+    .delete-notice{
+        height: 40px;
+        background-color: green;
+        width: 550px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        border-radius: 10px;
+    }
+}

@@ -1,0 +1,12 @@
+<mat-form-field appearance="fill">
+    <mat-label>Numero de celular</mat-label>
+    <input matInput placeholder="Celular" [formControl]="formCelphone" (keydown)="formatPhoneNumber($event)" maxlength="12" >
+    <mat-icon matSuffix>phone</mat-icon>
+    <mat-error *ngIf="formCelphone.errors?.['required']; else regularExpression">Este campo es obligatorio</mat-error>
+    <ng-template #regularExpression>
+        <mat-error *ngIf="formCelphone.errors?.['pattern']; else incomplete">Debe ser un numero</mat-error>
+    </ng-template>
+    <ng-template #incomplete>
+        <mat-error *ngIf="formCelphone.errors?.['minlength']">El campo esta incompleto</mat-error>
+    </ng-template>
+</mat-form-field>
