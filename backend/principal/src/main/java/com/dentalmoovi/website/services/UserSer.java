@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.mail.MailException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -47,7 +46,6 @@ import com.dentalmoovi.website.services.cache.CacheSer;
 public class UserSer {
 
     private final CacheSer cacheSer;
-    private final EmailSer emailSer;
     private final UserRep userRep;
     private final RolesRep rolesRep;
     private final AddressesRep addressesRep;
@@ -64,10 +62,9 @@ public class UserSer {
     @Value("${server.emailService}")
     private String emailServiceUrl;
 
-    public UserSer(CacheSer cacheSer, EmailSer emailSer, UserRep userRep, RolesRep rolesRep, AddressesRep addressesRep,
+    public UserSer(CacheSer cacheSer, UserRep userRep, RolesRep rolesRep, AddressesRep addressesRep,
             MunicipalyRep municipalyRep, DepartamentsRep departamentsRep, ActivityLogsRep activityLogsRep, RestTemplate restTemplate) {
         this.cacheSer = cacheSer;
-        this.emailSer = emailSer;
         this.userRep = userRep;
         this.rolesRep = rolesRep;
         this.addressesRep = addressesRep;
@@ -78,26 +75,11 @@ public class UserSer {
     }
 
     public void sendEmailNotification(String email, String subject, String body) {
-        String retrictReplay = cacheSer.getFromReplayCodeRestrict(email);
-        if (retrictReplay !=null && retrictReplay.equals(email)) return;
-
-        String formattedNumber = Utils.generateRandom6Number();
-
-        body += formattedNumber;
-        
-        cacheSer.addToOrUpdateRegistrationCache(email, formattedNumber);
-        cacheSer.addToOrUpdateReplayCodeRestrict(email, email);
 
         EmailData emailData = new EmailData(email, subject, body);
 
-        restTemplate.postForEntity(emailServiceUrl+"/send", emailData, Void.class);
+        restTemplate.postForEntity(emailServiceUrl+"/sendCode", emailData, Void.class);
 
-        /* try {
-            emailSer.sendEmail(email, subject, body);
-        } catch (Exception e) {
-            // Manage the exception in case it cannot send the email
-            e.printStackTrace();
-        } */
     }
 
     public String createUser(UserDTO userDTO) throws RuntimeException {
@@ -130,8 +112,6 @@ public class UserSer {
 
                 ActivityLogs log = new ActivityLogs(null, "El usuario se registro en la plataforma", LocalDateTime.now(), newUser.id());
                 activityLogsRep.save(log);
-
-                removeCache(userDTO.email());
 
                 return "User Created";
             }
@@ -354,24 +334,17 @@ public class UserSer {
 
         Users user = Utils.getUserByEmail(userCredentials.userName(), userRep);
 
-        try {
-            emailSer.sendEmail(userCredentials.userName(), subject, body);
-            removeCache(userCredentials.userName());
+        EmailData emailData = new EmailData(userCredentials.userName(), subject, body);
+
+        restTemplate.postForEntity(emailServiceUrl+"/sendEmail", emailData, Void.class);
 
             ActivityLogs log = new ActivityLogs(null, "El usuario solicito recordatorio de contraseña", LocalDateTime.now(), user.id());
             activityLogsRep.save(log);
 
             return updatePw(user, newPw);
-        } catch (MailException e) {
-            // Manage the exception in case it cannot send the email
-            e.printStackTrace();
-            throw new MailException(e.getMessage()) {};
-        }
     }
 
     public void validateCode(String key, String codeEntered){
-        //get verification code
-        String code = cacheSer.getFromRegistrationCache(key);
 
         //get tries
         Integer tries = cacheSer.getFromNumberTries(key);
@@ -380,17 +353,19 @@ public class UserSer {
         if (tries > 3) 
             throw new ALotTriesException("Many tries");
 
+        Boolean isCorrect = restTemplate.getForEntity(
+            emailServiceUrl+"/isCodeCorrect/"+key+"/"+codeEntered, Boolean.class
+            ).getBody();
+
+        Utils.showMessage(Boolean.TRUE.equals(isCorrect) ? "si" : "no");
+
         //verify if code sended is equals the verification code
-        if(!codeEntered.equals(code)) {
+        if(Boolean.FALSE.equals(isCorrect)) {
             cacheSer.addToOrUpdateNumberTries(key, tries+1);
-            throw new IncorrectException("The code: "+code+" is incorrect");
+            throw new IncorrectException("The code: "+codeEntered+" is incorrect");
         }
 
         cacheSer.removeFromNumberTries(key);
-    }
-
-    public void removeCache(String key){
-        cacheSer.removeFromRegistrationCache(key);
     }
     
     public Users getUser(long id){

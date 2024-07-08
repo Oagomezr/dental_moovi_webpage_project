@@ -25,7 +25,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-mail' //Mail dependency
 	implementation 'com.github.ben-manes.caffeine:caffeine' //Cache dependency
 	implementation 'io.jsonwebtoken:jjwt:0.12.3' // JWT dependency
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.3' // JWT dependency

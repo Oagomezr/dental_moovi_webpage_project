@@ -7,38 +7,10 @@ import com.github.benmanes.caffeine.cache.Cache;
 
 @Service
 public class CacheSer {
-    private Cache<String, String> registrationCodeConfig;
-    private Cache<String, String> replayCodeRestrict;
     private Cache<String, Integer> numberOfTriesCode;
 
-    public CacheSer(    
-        @Qualifier("registrationCodeConfig") Cache<String, String> registrationCodeConfig, 
-        @Qualifier("replayCodeRestrict") Cache<String, String> replayCodeRestrict,
-        @Qualifier("numberOfTriesCode") Cache<String, Integer> numberOfTriesCode
-    ) {
-        this.registrationCodeConfig = registrationCodeConfig;
-        this.replayCodeRestrict = replayCodeRestrict;
+    public CacheSer(@Qualifier("numberOfTriesCode") Cache<String, Integer> numberOfTriesCode) {
         this.numberOfTriesCode = numberOfTriesCode;
-    }
-
-    public void addToOrUpdateRegistrationCache(String key, String value) {
-        registrationCodeConfig.put(key, value);
-    }
-
-    public String getFromRegistrationCache(String key) {
-        return registrationCodeConfig.getIfPresent(key);
-    }
-
-    public void removeFromRegistrationCache(String key) {
-        registrationCodeConfig.invalidate(key);
-    }
-
-    public void addToOrUpdateReplayCodeRestrict(String key, String value) {
-        replayCodeRestrict.put(key, value);
-    }
-
-    public String getFromReplayCodeRestrict(String key) {
-        return replayCodeRestrict.getIfPresent(key);
     }
 
     public void addToOrUpdateNumberTries(String key, Integer value) {

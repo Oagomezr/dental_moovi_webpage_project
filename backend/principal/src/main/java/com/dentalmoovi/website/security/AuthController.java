@@ -82,7 +82,6 @@ public class AuthController {
             String userDetails = userSer.getUserDetails(loginUser.userName());
             if(userDetails.charAt(0) == 'A'){
                 userSer.validateCode(loginUser.userName(), loginUser.code());
-                userSer.removeCache(loginUser.userName());
             }
 
             Authentication auth = getAuth(loginUser.userName(), loginUser.password());

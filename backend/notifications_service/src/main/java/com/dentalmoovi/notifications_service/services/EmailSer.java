@@ -1,4 +1,4 @@
-package com.dentalmoovi.website.services;
+package com.dentalmoovi.notifications_service.services;
 
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

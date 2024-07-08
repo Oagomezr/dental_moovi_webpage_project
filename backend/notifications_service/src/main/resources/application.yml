@@ -1,0 +1,20 @@
+spring:
+    application:
+        name: notifications_service
+
+    mail:
+        host: ${MAIL_HOST}
+        port: ${MAIL_PORT}
+        protocol: smtp
+        username: ${EMAIL}
+        password: ${MAIL_PW}
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+                        
+server:
+    port: ${SPRING_PORT_SERVER}
+    address: ${SPRING_ADDRESS_SERVER}
