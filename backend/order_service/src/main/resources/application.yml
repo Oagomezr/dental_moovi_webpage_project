@@ -1,4 +1,6 @@
 spring:
+    application:
+        name: order_service
 
     datasource:
         url: ${DB_URL}
@@ -11,43 +13,20 @@ spring:
             mode: always
             continue-on-error: false
 
-    mail:
-        otherPassword: ${MAIL_PW_2}
-
     session:
-        store-type: jdbc
         jdbc:
             initialize-schema: always
             schema: classpath:org/springframework/session/jdbc/schema-@@platform@@.sql
             table-name: SPRING_SESSION
-    
-    servlet:
-        multipart:
-            max-file-size: 10MB
-            max-request-size: 10MB
+    web:
+        resources:
+            static-locations: classpath:/static/
 
 server:
     port: ${SPRING_PORT_SERVER}
     address: ${SPRING_ADDRESS_SERVER}
-    domainUrl: ${DOMAIN_URL}
-    domainName: ${DOMAIN}
-    emailService: ${EMAIL_SERVICE}
-    orderService: ${ORDER_SERVICE}
     servlet:
         session:
             cookie:
                 http-only: true
             timeout: 20m
-
-jwt:
-    secret: ${JWT_SECRET}
-    expiration: ${JWT_TIME}
-    accessTokenByCookieName: ${JWT_COOKIE}
-
-logging:
-    level:
-        org:
-            springframework:
-                data:
-                    jdbc:
-                        core: DEBUG

@@ -18,8 +18,6 @@ import com.dentalmoovi.website.models.entities.enums.StatusOrderList;
 import com.dentalmoovi.website.models.responses.OrdersResponse;
 import com.dentalmoovi.website.services.OrdersSer;
 
-import jakarta.servlet.http.HttpServletResponse;
-
 
 @Controller
 @RequestMapping
@@ -31,13 +29,21 @@ public class OrdersController {
     }
 
     @PostMapping("/api/user/generateOrder/{idAddress}")
-    public void generateOrderByUser(@RequestBody CartRequest req, @PathVariable("idAddress") long idAddress, HttpServletResponse response) {
-        ordersSer.downloadOrder(req, idAddress, false, response);
+    public void generateOrderByUser(@RequestBody CartRequest req, @PathVariable("idAddress") long idAddress) {
+        try {
+            ordersSer.generateOrder(req, idAddress, false);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 
     @PostMapping("/api/admin/generateOrder/{idAddress}")
-    public void generateOrderByAdmin(@RequestBody CartRequest req, @PathVariable("idAddress") long idAddress, HttpServletResponse response) {
-        ordersSer.downloadOrder(req, idAddress, true, response);
+    public void generateOrderByAdmin(@RequestBody CartRequest req, @PathVariable("idAddress") long idAddress) {
+        try {
+            ordersSer.generateOrder(req, idAddress, true);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
     @GetMapping("/api/admin/order/{status}/{orderBy}")
     public ResponseEntity<OrdersResponse> getOrdersA(@PathVariable("status") StatusOrderList status, @PathVariable("orderBy") boolean orderBy){

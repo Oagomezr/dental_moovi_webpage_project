@@ -1,9 +1,9 @@
-CREATE DATABASE IF NOT EXISTS prueba;
+/* CREATE DATABASE IF NOT EXISTS prueba;
 USE prueba;
 DROP DATABASE dental_moovi;
 CREATE DATABASE dental_moovi;
 
-USE dental_moovi;
+USE dental_moovi; */
 
 CREATE TABLE IF NOT EXISTS categories (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -32,8 +32,8 @@ CREATE TABLE IF NOT EXISTS products (
     id_main_image BIGINT, FOREIGN KEY (id_main_image) REFERENCES images(id)
 );
 
-ALTER TABLE images
-ADD CONSTRAINT fk_images_product_id FOREIGN KEY (id_product) REFERENCES products(id);
+/* ALTER TABLE images
+ADD CONSTRAINT fk_images_product_id FOREIGN KEY (id_product) REFERENCES products(id); */
 
 CREATE TABLE IF NOT EXISTS users(
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
