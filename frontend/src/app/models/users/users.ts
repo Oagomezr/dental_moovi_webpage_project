@@ -1,5 +1,5 @@
-import { AddressesData } from "./addresses/addressesData";
-import { Roles } from "./roles";
+import { AddressesData } from "../addresses/addressesData";
+import { Roles } from "../roles";
 
 export interface Users {
     idUser?: number | null;
@@ -10,6 +10,7 @@ export interface Users {
     birthdate?: string | null;
     gender?: string | null;
     password?: string | null;
+    enterprise?: string | null;
     roles?: Roles[];
     addresses?: AddressesData[];
 }

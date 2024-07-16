@@ -1,4 +1,4 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -16,13 +16,7 @@ export class CartService {
 
   constructor(private http: HttpClient) {}
 
-  generateOrder(req: CartRequest, idAddress: number): Observable<HttpResponse<Blob>> {
-    const url = `${environment.url_back}/${this.access}/generateOrder/${idAddress}`;
-    
-    return this.http.post(url, req, {
-      observe: 'response',
-      responseType: 'blob',
-      withCredentials: true,
-    });
+  generateOrder(req: CartRequest, idAddress: number): Observable<void> {
+    return this.http.post<void>(`${environment.url_back}/${this.access}/generateOrder/${idAddress}`, req);
   }
 }

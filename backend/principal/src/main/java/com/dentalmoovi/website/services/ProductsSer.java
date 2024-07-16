@@ -23,6 +23,7 @@ import com.dentalmoovi.website.models.cart.CartDtoRequest;
 import com.dentalmoovi.website.models.cart.CartDtoRespose;
 import com.dentalmoovi.website.models.cart.CartRequest;
 import com.dentalmoovi.website.models.cart.CartResponse;
+import com.dentalmoovi.website.models.dtos.ImageSizes;
 import com.dentalmoovi.website.models.dtos.ImagesDTO;
 import com.dentalmoovi.website.models.dtos.MessageDTO;
 import com.dentalmoovi.website.models.dtos.ProductsDTO;
@@ -31,6 +32,7 @@ import com.dentalmoovi.website.models.entities.Categories;
 import com.dentalmoovi.website.models.entities.Images;
 import com.dentalmoovi.website.models.entities.Products;
 import com.dentalmoovi.website.models.entities.Users;
+import com.dentalmoovi.website.models.exceptions.ImageLoadingException;
 import com.dentalmoovi.website.models.exceptions.IncorrectException;
 import com.dentalmoovi.website.models.responses.ProductsResponse;
 import com.dentalmoovi.website.repositories.ActivityLogsRep;
@@ -58,6 +60,7 @@ public class ProductsSer {
 
     private String categoryNotFound = "Category not found";
     private String productNotFound = "Product not found";
+    private String imageNotFound = "Image not found";
 
     @Cacheable(cacheNames = "productsByCategory")
     public ProductsResponse getProductsByCategory(String parentCategoryName, int currentPage, int productsPerPage, boolean all){
@@ -218,28 +221,11 @@ public class ProductsSer {
                 // Read original image
                 BufferedImage originalImage = ImageIO.read(file.getInputStream());
                 
-                // Set max image sizes
-                int maxWidth = 600;
-                int maxHeight = 600;
-                
-                // Variables to new Width and Height of the image
-                int newWidth;
-                int newHeight;
-                
-                // Create new image if resizing is not required
-                if (originalImage.getWidth() < maxWidth && originalImage.getHeight() < maxHeight)
-                    return createImage(file, product, null);
-                
                 // Calculate new image size
-                if (originalImage.getWidth() > originalImage.getHeight()) {
-                    newHeight = maxHeight;
-                    newWidth = (originalImage.getWidth() * maxHeight) / originalImage.getHeight();
-                } else {
-                    newWidth = maxWidth;
-                    newHeight = (originalImage.getHeight() * maxWidth) / originalImage.getWidth();
-                }
+                ImageSizes sizes = calculateSizes(originalImage.getWidth(), originalImage.getHeight());
                 
-                byte[] resizedImageData = rescaleAndConvert(originalImage, newWidth, newHeight);
+                //rescale the image
+                byte[] resizedImageData = rescaleAndConvert(originalImage, sizes.width(), sizes.height());
 
                 Users user = userSer.getUserAuthenticated();
 
@@ -248,6 +234,27 @@ public class ProductsSer {
                 
                 // Create and save the new image
                 return createImage(file, product, resizedImageData);
+            }
+
+            private ImageSizes calculateSizes(Integer originalWidth, Integer originalHeight){
+                // Set max image sizes
+                int maxWidth = 600;
+                int maxHeight = 600;
+                
+                // Variables to new Width and Height of the image
+                int newWidth;
+                int newHeight;
+                
+                // Calculate new image size
+                if (originalWidth > originalHeight) {
+                    newHeight = maxHeight;
+                    newWidth = (originalWidth * maxHeight) / originalHeight;
+                } else {
+                    newWidth = maxWidth;
+                    newHeight = (originalHeight * maxWidth) / originalWidth;
+                }
+
+                return new ImageSizes(newWidth, newHeight);
             }
 
             private MessageDTO createImage(MultipartFile file, Products product, byte[] resizedImageData) throws IOException {
@@ -312,7 +319,7 @@ public class ProductsSer {
     @CacheEvict(
         cacheNames = {"getProducsByContaining", "getProduct", "productsByCategory"}, 
         allEntries = true)
-    public MessageDTO deleteImage(String parameter){
+    public MessageDTO deleteImage(String parameter) throws ImageLoadingException{
 
         Users user = userSer.getUserAuthenticated();
 
@@ -333,7 +340,7 @@ public class ProductsSer {
             long idImage = Long.parseLong(parameter);
 
             Images img = imagesRep.findById(idImage)
-                .orElseThrow(() -> new RuntimeException("Image not found"));
+                .orElseThrow(() -> new ImageLoadingException(imageNotFound));
             
             Products product = productsRep.findById(img.idProduct())
                 .orElseThrow(() -> new RuntimeException(productNotFound));
@@ -481,7 +488,7 @@ public class ProductsSer {
             
             
             if (admin) product = new Products(
-                product.id(), product.name(), product.description(), product.shortDescription(), product.unitPrice(), 
+                product.id(), product.name(), product.description(), product.shortDescription(), elem.prize(), 
                 product.stock(), product.openToPublic(), product.showPrice(), product.idMainImage(), product.idCategory());
 
             if (!product.openToPublic() && !admin)
@@ -496,7 +503,7 @@ public class ProductsSer {
             
             if (product.idMainImage() != null) {
                 Images mainImage = imagesRep.findById(product.idMainImage())
-                    .orElseThrow(() -> new RuntimeException("Image not found"));
+                    .orElseThrow(() -> new RuntimeException(imageNotFound));
                 cartImage = setImageDTO(mainImage);
             }
 
@@ -553,7 +560,7 @@ public class ProductsSer {
         if(product.idMainImage() == null) return productImagesDTO;
 
         Images mainImage = imagesRep.findById(product.idMainImage())
-                .orElseThrow(() -> new RuntimeException("Image not found"));
+                .orElseThrow(() -> new RuntimeException(imageNotFound));
 
         if(allImages){
             List<Images> productImages = imagesRep.findByIdProduct(product.id());

@@ -30,7 +30,7 @@ export class HeaderComponent {
 
   name?: string|null;
   categories?: CategoriesData[];
-  cartRequest: CartRequest = { data: [] };
+  cartRequest: CartRequest = { data: [], idUser: 0 };
   ref:string | null = localStorage.getItem('isLogged');
   isAuthenticate:boolean = this.ref != null;
   isAdmin: boolean = localStorage.getItem('isAdmin') != null;

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CPW } from 'src/app/models/cPw';
 import { message } from 'src/app/models/message';
-import { UserAuth } from 'src/app/models/userAuth';
+import { UserAuth } from 'src/app/models/users/userAuth';
 import { environment } from 'src/environments/environment';
 
 @Injectable({

@@ -3,10 +3,17 @@
     width: 90%;
     margin: 0 5%;
 
+    .users-part{
+        width: 30%;
+    }
+
     .addresses-part{
+        width: 45%;
+    }
+
+    .parts{
         height: 400px;
         padding-top: 10px;
-        width: 60%;
         top: 50px;
         left: 0px;
         position:relative;
@@ -66,11 +73,11 @@
             color: white;
         }
 
-        .addresses{
+        .fields{
             overflow-y: auto;
             position: relative;
             width: 90%;
-            .address-box{
+            .field-box{
                 position: relative;
                 width: 100%;
                 height: 80px;
@@ -88,7 +95,7 @@
                     margin-left: 15px;
                 }
 
-                .address-info{
+                .field-info{
                     text-decoration: none;
                     border: none;
                     color: black;
@@ -99,10 +106,11 @@
                     
                     .icon{
                         height: 100%;
-                        width: 6%;
+                        width: 20%;
                         display: flex;
                         justify-content: center;
                         align-items: center;
+                        font-size: larger;
                     }
                     p{
                         text-align: left;
@@ -149,7 +157,7 @@
         position: relative;
         top: 50px;
         padding-top: 10px;
-        width: 40%;
+        width: 25%;
         display: flex;
         justify-content: flex-start;
         align-items: center;

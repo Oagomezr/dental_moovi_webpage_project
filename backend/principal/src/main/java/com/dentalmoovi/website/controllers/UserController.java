@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.dentalmoovi.website.Utils;
 import com.dentalmoovi.website.models.dtos.AddressesDTO;
 import com.dentalmoovi.website.models.dtos.MessageDTO;
 import com.dentalmoovi.website.models.dtos.UserDTO;
 import com.dentalmoovi.website.models.responses.AddressesResponse;
+import com.dentalmoovi.website.models.responses.UserResponse;
 import com.dentalmoovi.website.security.LoginDTO;
 import com.dentalmoovi.website.security.PwDTO;
 import com.dentalmoovi.website.services.UserSer;
@@ -35,6 +37,18 @@ public class UserController {
             userSer.createUser(userDTO);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (Exception e) {
+            Utils.showMessage(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
+    }
+
+    @PostMapping("/api/admin/create")
+    public ResponseEntity<Void> createUsers(@RequestBody UserDTO userDTO){
+        try {
+            userSer.createUsers(userDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (Exception e) {
+            Utils.showMessage(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
@@ -58,6 +72,7 @@ public class UserController {
             UserDTO userDTO = userSer.getUserAuthDTO();
             return ResponseEntity.ok(userDTO);
         } catch (Exception e) {
+            Utils.showMessage("error get user: "+e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
@@ -67,6 +82,7 @@ public class UserController {
         try {
             return ResponseEntity.ok(userSer.updateUserInfo(userDTO));
         } catch (Exception e) {
+            Utils.showMessage("error update user: "+e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
@@ -78,6 +94,15 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @GetMapping("/api/admin/getAddresses/{id}")
+    public ResponseEntity<AddressesResponse> getAddresses(@PathVariable("id") Long id){
+        try {
+            return ResponseEntity.ok(userSer.getAddresses(id));
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
@@ -132,4 +157,23 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
+
+    @GetMapping("/api/admin/getUsers")
+    public ResponseEntity<UserResponse> getUsers(){
+        try {
+            UserResponse response = userSer.getUsers();
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/api/public/enterprises/{name}")
+    public ResponseEntity<Object> getEnterprisesByContaining(@PathVariable("name") String name){
+        try{
+            return ResponseEntity.ok(userSer.getEnterprises(name));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    } 
 }

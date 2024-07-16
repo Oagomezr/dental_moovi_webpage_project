@@ -10,7 +10,7 @@ import { OrderResponse } from 'src/app/models/orders/ordersResponse';
 export class OrdersService {
 
   isAdmin: boolean = localStorage.getItem('isAdmin') != null;
-  access: string = this.isAdmin ? "admin" : "public";
+  access: string = this.isAdmin ? "admin" : "user";
 
   constructor(private http: HttpClient) { }
 
@@ -19,6 +19,6 @@ export class OrdersService {
   }
   
   getPdfsList(status:string, orderBy:boolean):  Observable<OrderResponse>{
-    return this.http.get<OrderResponse>(`${environment.url_back}/admin/order/${status}/${orderBy}`, { withCredentials:true });
+    return this.http.get<OrderResponse>(`${environment.url_back}/${this.access}/order/${status}/${orderBy}`, { withCredentials:true });
   }
 }

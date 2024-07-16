@@ -1,14 +1,50 @@
 <form class="content-component" (ngSubmit)="purchase()">
-    <div class="addresses-part">
+    <div class="users-part parts">
+        <h2>Elige el usuario</h2>
+        <div class="fields">
+            <label (click)="searchAddresses(user.idUser!)" 
+            (keydown)="handleKeydown($event, user.idUser!)"
+            *ngFor="let user of users; let i = index" class="field-box">
+                <div class="input-box">
+                    <input
+                    tabindex="0" type="radio" name="user" 
+                    [value]="user.idUser" [(ngModel)]="selectedUserId">
+                </div>
+                <div class="field-info">
+                    <div class="icon">
+                        <i class="material-icons">person</i>
+                    </div>
+                    <div class="option-info">
+                        <h2>{{ user.firstName }}</h2>
+                        <p>{{ user.lastName }}</p>
+                    </div>
+                </div>
+                <button >
+                    <i class="material-icons">edit</i>
+                </button>
+
+            </label>
+            <a class="setting" href="/signup">
+                <div class="icon">
+                    <i class="material-icons">add_circle</i>
+                </div>
+                <div class="option-info">
+                    <h2>Añadir usuario</h2>
+                    <p>Añade un nuevo cliente</p>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="addresses-part parts">
         <h3 class="address-advice advice" *ngIf="selectNotice">Por favor selecciona una dirección para enviar el pedido</h3>
         <h3 class="order-complete advice" *ngIf="complete">Pedido solicitado con exito.</h3>
         <h2>Elige la dirección de envió</h2>
-        <div class="addresses">
-            <label *ngFor="let address of addresses; let i = index" class="address-box">
+        <div class="fields">
+            <label *ngFor="let address of addresses; let i = index" class="field-box">
                 <div class="input-box">
                     <input type="radio" name="address" [value]="address.id" [(ngModel)]="selectedAddressId">
                 </div>
-                <div class="address-info">
+                <div class="field-info">
                     <div class="icon">
                         <i class="material-icons">location_on</i>
                     </div>
@@ -18,7 +54,7 @@
                     </div>
                 </div>
             </label>
-            <button (click)="addAddress()" class="setting" href="settings/addresses/address">
+            <button class="setting" href="settings/addresses/address">
                 <div class="icon">
                     <i class="material-icons">add_circle</i>
                 </div>
@@ -53,6 +89,6 @@
             <i class="material-icons">production_quantity_limits</i> Garantía del producto
         </a>
         
-        <button [disabled]="complete" type="submit" class="fields" mat-raised-button color="primary" style="margin-top: 10px;">Comprar</button>
+        <button type="submit" class="fields" mat-raised-button color="primary" style="margin-top: 10px;" [disabled]="complete">Comprar</button>
     </div>
 </form>

@@ -3,7 +3,7 @@ import { UsersService } from 'src/app/services/user/users.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { uniqueValueValidator } from 'src/app/validators/userFieldsValidator';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { DateFieldComponent } from "../form-fields-components/date-field/date-field.component";
 import { SelectorFieldComponent } from "../form-fields-components/selector-field/selector-field.component";
@@ -18,6 +18,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { Enum1 } from 'src/app/models/enums/enum1/enum1';
 import { NamesFieldComponent } from '../form-fields-components/names-field/names-field.component';
+import { AutocompleteFieldComponent } from '../form-fields-components/autocomplete-field/autocomplete-field.component';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @Component({
     selector: 'app-sign-up',
@@ -25,12 +27,22 @@ import { NamesFieldComponent } from '../form-fields-components/names-field/names
     styleUrls: ['./sign-up.component.scss'],
     standalone: true,
     imports: [
-      CommonModule, MatFormFieldModule, ReactiveFormsModule, DateFieldComponent, 
+      CommonModule, MatFormFieldModule, ReactiveFormsModule, DateFieldComponent, AutocompleteFieldComponent,
       SelectorFieldComponent, CelPhoneFieldComponent, PasswordFieldComponent, ConfirmCodeFieldComponent, 
-      MatInputModule, MatButtonModule, MatSelectModule, MatDatepickerModule,
-      MatNativeDateModule, MatIconModule, NamesFieldComponent]
+      MatInputModule, MatButtonModule, MatSelectModule, MatDatepickerModule, MatAutocompleteModule,
+      MatNativeDateModule, MatIconModule, NamesFieldComponent, AsyncPipe]
 })
 export class SignUpComponent {
+
+  isAuthenticate:boolean = localStorage.getItem('isLogged') != null; 
+  isAdmin: boolean = localStorage.getItem('isAdmin') != null;
+
+  ngOnInit(){
+    if(this.isAuthenticate && !this.isAdmin) this.router.navigate(['/']);
+    
+  }
+
+  enterprises!: Enum1[];
 
   userFormGroup = new FormGroup({
     idUser: new FormControl(0),
@@ -46,6 +58,10 @@ export class SignUpComponent {
     email: new FormControl( '', { validators: 
       [Validators.required, Validators.email],
       asyncValidators: uniqueValueValidator(this.userService, true),
+      updateOn: 'blur'}),
+
+    enterprise: new FormControl('', { validators: 
+      [Validators.pattern('^[^0-9,!@#$%^&*()_+={}<>?/|\'":;`~]*$'), Validators.minLength(3)], 
       updateOn: 'blur'}),
 
     celPhone: new FormControl('', { validators: 
@@ -73,6 +89,11 @@ export class SignUpComponent {
   constructor(private userService: UsersService, private router: Router){}
 
   sendCode(): void {
+    if(this.isAdmin){
+      this.confirm = true;
+      this.confirmCode('12');
+      return;
+    }
     if(this.userFormGroup.valid){
       this.organizeInformation();
       this.email = this.userFormGroup.get('email')?.value ?? '';
@@ -84,6 +105,24 @@ export class SignUpComponent {
           console.error(error.error.message);
         }
       });
+    }
+  }
+
+  searchEnterprises(event:any){
+    let value = event.target.value;
+    /* this.userFormGroup.get('enterprise')?.setValue(value);
+    console.log(this.userFormGroup.get('enterprise')); */
+    if (value.length >1) {
+      this.userService.getEnterprises(value).subscribe({
+        next: r => {
+          this.enterprises = r.data;
+        },
+        error: error => {
+          console.error("Enterprise not found: ", error);
+        }
+      });
+    } else {
+      this.enterprises = [];
     }
   }
 

@@ -13,6 +13,7 @@ import { OrderDetailsComponent } from './components/order-details/order-details.
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { ForgottenPwComponent } from './components/forgotten-pw/forgotten-pw.component';
 import { ManageOrdersComponent } from './components/manage-orders/manage-orders.component';
+import { OrderAdminComponent } from './components/order-admin/order-admin.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -26,6 +27,7 @@ const routes: Routes = [
   { path: 'settings/addresses', component: EditAddressesComponent },
   { path: 'settings/addresses/address', component: EditAddressComponent },
   { path: 'orderDetails', component: OrderDetailsComponent },
+  { path: 'orderAdmin', component: OrderAdminComponent },
   { path: 'manageOrders', component: ManageOrdersComponent },
   { path: '**', component: PageNotFoundComponent },
 ];

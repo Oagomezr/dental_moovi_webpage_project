@@ -25,6 +25,20 @@
             <i class="material-icons">navigate_next</i>
         </div>
     </a>
+
+    <a *ngIf="isAdmin" class="addresses setting" href="/orderAdmin">
+        <div class="icon">
+            <i class="material-icons">manage_accounts</i>
+        </div>
+        <div class="option-info">
+            <h2>Editar usuarios</h2>
+            <p>Edita la informacion de los usuarios</p>
+        </div>
+        <div class="icon navigate_next">
+            <i class="material-icons">navigate_next</i>
+        </div>
+    </a>
+    
     <form (ngSubmit)="changePassword()" [formGroup]="changePasswordFormGroup" class="change-password">
         <div class="icon">
             <i class="material-icons">lock</i>

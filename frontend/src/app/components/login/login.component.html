@@ -12,7 +12,7 @@
             <mat-error *ngIf="userAuthFormGroup.get('userName')?.errors?.['uniqueValue']">No encontrado </mat-error>
         </mat-form-field>
         <app-password-field [formPassword]="userAuthFormGroup.controls.password"></app-password-field>
-        <button type="submit" mat-raised-button color="primary" class="login-button">Iniciar sesión</button>
+        <button type="submit" mat-raised-button color="primary" class="login-button" [disabled]="session">Iniciar sesión</button>
         <a href="/pwForgotten" style="text-align: center;">¿Olvidaste tu contraseña?</a>
     </form>
     <div class="registration-button">

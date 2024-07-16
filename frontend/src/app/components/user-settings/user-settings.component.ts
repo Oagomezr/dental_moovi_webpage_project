@@ -15,6 +15,7 @@ import { AuthenticateService } from 'src/app/services/authenticate/authenticate.
 })
 export class UserSettingsComponent {
   
+  isAdmin: boolean = localStorage.getItem('isAdmin') != null;
   constructor(private router: Router, private authSer: AuthenticateService){}
 
   isLogged: boolean = localStorage.getItem('isLogged') != null;

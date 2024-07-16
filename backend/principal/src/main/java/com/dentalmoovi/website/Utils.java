@@ -2,6 +2,7 @@ package com.dentalmoovi.website;
 
 import com.dentalmoovi.website.models.cart.CartRequest;
 import com.dentalmoovi.website.models.entities.Addresses;
+import com.dentalmoovi.website.models.entities.Enterprises;
 import com.dentalmoovi.website.models.entities.Orders;
 import com.dentalmoovi.website.models.entities.Users;
 import com.dentalmoovi.website.models.entities.enums.Departaments;
@@ -11,6 +12,7 @@ import com.dentalmoovi.website.models.exceptions.ALotTriesException;
 import com.dentalmoovi.website.models.exceptions.ImageLoadingException;
 import com.dentalmoovi.website.models.exceptions.JsonConversionException;
 import com.dentalmoovi.website.repositories.AddressesRep;
+import com.dentalmoovi.website.repositories.EnterprisesRep;
 import com.dentalmoovi.website.repositories.OrdersRep;
 import com.dentalmoovi.website.repositories.UserRep;
 import com.dentalmoovi.website.repositories.enums.DepartamentsRep;
@@ -139,14 +141,6 @@ public class Utils {
         return stringBuilder.toString();
     }
 
-    public static String generateRandom6Number(){
-        //Generate randomNumber
-        int randomNumber = random.nextInt(1000000);
-
-        //generate a format to add zeros to the left in case randomNumber < 100000
-        return String.format("%06d", randomNumber);
-    }
-
     @Cacheable(value = "getAddress", key = "#id")
     public static Addresses getAddress(Long id, AddressesRep addressesRep){
         return addressesRep.findById(id)
@@ -156,12 +150,17 @@ public class Utils {
     @Cacheable(value = "getDepartament", key = "#id")
     public static Departaments getDepartament(Integer id, DepartamentsRep departamentsRep){
         return departamentsRep.findById(id)
-            .orElseThrow(() -> new RuntimeException("Address not found"));
+            .orElseThrow(() -> new RuntimeException("Departament not found"));
     }
 
     @Cacheable(value = "getMunicipalyCity", key = "#id")
     public static MunicipalyCity getMunicipalyCity(Integer id, MunicipalyRep municipalyRep){
         return municipalyRep.findById(id)
-            .orElseThrow(() -> new RuntimeException("Address not found"));
+            .orElseThrow(() -> new RuntimeException("Municipaly not found"));
+    }
+
+    public static Enterprises getEnterprise(Long id, EnterprisesRep enterprisesRep){
+        return enterprisesRep.findById(id)
+            .orElseThrow(() -> new RuntimeException("Enterprise not found"));
     }
 }

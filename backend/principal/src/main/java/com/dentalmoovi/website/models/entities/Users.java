@@ -21,6 +21,7 @@ public record Users(
     LocalDate birthdate,
     GenderList gender,
     String password,
+    Long idEnterprise,
     @MappedCollection(idColumn = "id_user") Set<UsersRoles> roles,
     @MappedCollection(idColumn = "id_user") Set<UsersAddresses> addresses
 ) {

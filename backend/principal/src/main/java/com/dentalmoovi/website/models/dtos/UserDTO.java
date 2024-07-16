@@ -13,6 +13,7 @@ public record UserDTO(
     LocalDate birthdate,
     GenderList gender,
     String code, 
-    String password
+    String password,
+    String enterprise
 ) {}
 

@@ -4,4 +4,8 @@ public class ImageLoadingException extends Exception{
     public ImageLoadingException(String message, Throwable cause) {
         super(message, cause);
     }
+
+    public ImageLoadingException(String message) {
+        super(message);
+    }
 }

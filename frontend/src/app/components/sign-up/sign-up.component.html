@@ -22,6 +22,16 @@
             <mat-error *ngIf="userFormGroup.get('email')?.errors?.['uniqueValue']">Ese email actualmente se encuentra registrado</mat-error>
         </mat-form-field>
 
+        <mat-form-field class="fields">
+            <mat-label>Empresa en la que labora (opcional)</mat-label>
+            <input type="text" matInput [formControl]="userFormGroup.controls.enterprise" [matAutocomplete]="auto" (input)="searchEnterprises($event)">
+            <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let option of enterprises" [value]="option.description">
+                    {{ option.description }}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+
         <div class="birth-gender">
             <app-date-field 
             [formBirthDate]="userFormGroup.controls.birthdate"
@@ -38,10 +48,10 @@
 
         <div class="celphone-password">
             <app-cel-phone-field [formCelphone]="userFormGroup.controls.celPhone"></app-cel-phone-field>
-            <app-password-field [formPassword]="userFormGroup.controls.password"></app-password-field>
+            <app-password-field *ngIf="!isAdmin" [formPassword]="userFormGroup.controls.password"></app-password-field>
         </div> 
     
-        <button class="signup-button" type="submit" mat-raised-button color="primary" [disabled]="userFormGroup.invalid">Crear usuario</button>
+        <button class="signup-button" type="submit" mat-raised-button color="primary" [disabled]="!isAdmin && userFormGroup.invalid">Crear usuario</button>
     </form>
 </div>
     

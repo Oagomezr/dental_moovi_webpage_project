@@ -35,6 +35,11 @@ CREATE TABLE IF NOT EXISTS products (
 /* ALTER TABLE images
 ADD CONSTRAINT fk_images_product_id FOREIGN KEY (id_product) REFERENCES products(id); */
 
+CREATE TABLE IF NOT EXISTS enterprises(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS users(
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
@@ -43,7 +48,9 @@ CREATE TABLE IF NOT EXISTS users(
     cel_phone VARCHAR(13) NOT NULL,
     birthdate DATE,
     gender ENUM('FEMALE', 'MALE', 'OTHER', 'UNDEFINED') NOT NULL,
-    password VARCHAR(255) NOT NULL
+    password VARCHAR(255),
+    id_enterprise BIGINT,
+    FOREIGN KEY (id_enterprise) REFERENCES enterprises(id)
 );
 
 CREATE TABLE IF NOT EXISTS activity_logs(

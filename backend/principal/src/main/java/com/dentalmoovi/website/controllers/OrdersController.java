@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.dentalmoovi.website.Utils;
 import com.dentalmoovi.website.models.cart.CartRequest;
+import com.dentalmoovi.website.models.dtos.MessageDTO;
 import com.dentalmoovi.website.models.entities.enums.StatusOrderList;
 import com.dentalmoovi.website.models.responses.OrdersResponse;
 import com.dentalmoovi.website.services.OrdersSer;
@@ -29,22 +31,25 @@ public class OrdersController {
     }
 
     @PostMapping("/api/user/generateOrder/{idAddress}")
-    public void generateOrderByUser(@RequestBody CartRequest req, @PathVariable("idAddress") long idAddress) {
+    public ResponseEntity<MessageDTO> generateOrderByUser(@RequestBody CartRequest req, @PathVariable("idAddress") long idAddress) {
         try {
-            ordersSer.generateOrder(req, idAddress, false);
+            return ResponseEntity.ok(ordersSer.generateOrder(req, idAddress, false));
         } catch (Exception e) {
+            Utils.showMessage("error to generate order:"+e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
     @PostMapping("/api/admin/generateOrder/{idAddress}")
-    public void generateOrderByAdmin(@RequestBody CartRequest req, @PathVariable("idAddress") long idAddress) {
+    public ResponseEntity<MessageDTO> generateOrderByAdmin(@RequestBody CartRequest req, @PathVariable("idAddress") long idAddress) {
         try {
-            ordersSer.generateOrder(req, idAddress, true);
+            return ResponseEntity.ok(ordersSer.generateOrder(req, idAddress, true));
         } catch (Exception e) {
+            Utils.showMessage("error to generate order:"+e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
+
     @GetMapping("/api/admin/order/{status}/{orderBy}")
     public ResponseEntity<OrdersResponse> getOrdersA(@PathVariable("status") StatusOrderList status, @PathVariable("orderBy") boolean orderBy){
         try{

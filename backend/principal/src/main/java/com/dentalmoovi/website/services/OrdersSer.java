@@ -27,6 +27,7 @@ import com.dentalmoovi.website.models.exceptions.IncorrectException;
 import com.dentalmoovi.website.models.responses.OrdersResponse;
 import com.dentalmoovi.website.repositories.ActivityLogsRep;
 import com.dentalmoovi.website.repositories.AddressesRep;
+import com.dentalmoovi.website.repositories.EnterprisesRep;
 import com.dentalmoovi.website.repositories.OrdersRep;
 import com.dentalmoovi.website.repositories.enums.DepartamentsRep;
 import com.dentalmoovi.website.repositories.enums.MunicipalyRep;
@@ -41,13 +42,18 @@ public class OrdersSer {
     private final UserSer userSer;
     private final ActivityLogsRep activityLogsRep;
     private final RestTemplate restTemplate;
+    private final EnterprisesRep enterprisesRep;
 
     @Value("${server.orderService}")
     private String orderServiceUrl;
+    private boolean admin = false;
+
+    Orders order;
+    Users user;
 
     public OrdersSer(OrdersRep ordersRep, ProductsSer productsSer, AddressesRep addressesRep,
             DepartamentsRep departamentsRep, MunicipalyRep municipalyRep, UserSer userSer,
-            ActivityLogsRep activityLogsRep, RestTemplate restTemplate) {
+            ActivityLogsRep activityLogsRep, RestTemplate restTemplate, EnterprisesRep enterprisesRep) {
         this.ordersRep = ordersRep;
         this.productsSer = productsSer;
         this.addressesRep = addressesRep;
@@ -56,16 +62,13 @@ public class OrdersSer {
         this.userSer = userSer;
         this.activityLogsRep = activityLogsRep;
         this.restTemplate = restTemplate;
+        this.enterprisesRep = enterprisesRep;
     }
 
-    private boolean admin = false;
-
-    Orders order;
-    Users user;
-
-    public void generateOrder(CartRequest req, long idAddress, boolean admin){
+    public MessageDTO generateOrder(CartRequest req, long idAddress, boolean admin){
         this.admin = admin;
         generatePdf(req, idAddress);
+        return new MessageDTO("Order generated successfully");
     }
 
     public OrdersResponse getAllOrders(boolean isAdmin){
@@ -139,9 +142,11 @@ public class OrdersSer {
         String date = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
         String hour = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
 
+        String enterpriseName = Utils.getEnterprise(user.idEnterprise(), enterprisesRep).name();
+        
         return new OrderFormat(
                 order.id(), user.firstName(), user.lastName(), address.phone(), date, hour, departament.name(), 
-                municipaly.name(), address.address(), null, cartResponse.data(), 
+                municipaly.name(), address.address(), enterpriseName, cartResponse.data(), 
                 String.format("%,.2f", cartResponse.total()));
     }
 }

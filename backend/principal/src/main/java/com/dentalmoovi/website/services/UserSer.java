@@ -18,10 +18,12 @@ import org.springframework.web.client.RestTemplate;
 import com.dentalmoovi.website.Utils;
 import com.dentalmoovi.website.models.dtos.AddressesDTO;
 import com.dentalmoovi.website.models.dtos.EmailData;
+import com.dentalmoovi.website.models.dtos.Enum1DTO;
 import com.dentalmoovi.website.models.dtos.MessageDTO;
 import com.dentalmoovi.website.models.dtos.UserDTO;
 import com.dentalmoovi.website.models.entities.ActivityLogs;
 import com.dentalmoovi.website.models.entities.Addresses;
+import com.dentalmoovi.website.models.entities.Enterprises;
 import com.dentalmoovi.website.models.entities.Roles;
 import com.dentalmoovi.website.models.entities.Users;
 import com.dentalmoovi.website.models.entities.enums.Departaments;
@@ -31,8 +33,11 @@ import com.dentalmoovi.website.models.exceptions.ALotTriesException;
 import com.dentalmoovi.website.models.exceptions.AlreadyExistException;
 import com.dentalmoovi.website.models.exceptions.IncorrectException;
 import com.dentalmoovi.website.models.responses.AddressesResponse;
+import com.dentalmoovi.website.models.responses.EnumResponse1;
+import com.dentalmoovi.website.models.responses.UserResponse;
 import com.dentalmoovi.website.repositories.ActivityLogsRep;
 import com.dentalmoovi.website.repositories.AddressesRep;
+import com.dentalmoovi.website.repositories.EnterprisesRep;
 import com.dentalmoovi.website.repositories.RolesRep;
 import com.dentalmoovi.website.repositories.UserRep;
 import com.dentalmoovi.website.repositories.enums.DepartamentsRep;
@@ -53,6 +58,7 @@ public class UserSer {
     private final DepartamentsRep departamentsRep;
     private final ActivityLogsRep activityLogsRep;
     private final RestTemplate restTemplate;
+    private final EnterprisesRep enterprisesRep;
 
     private static final BCryptPasswordEncoder pwe = new BCryptPasswordEncoder();
 
@@ -61,18 +67,6 @@ public class UserSer {
 
     @Value("${server.emailService}")
     private String emailServiceUrl;
-
-    public UserSer(CacheSer cacheSer, UserRep userRep, RolesRep rolesRep, AddressesRep addressesRep,
-            MunicipalyRep municipalyRep, DepartamentsRep departamentsRep, ActivityLogsRep activityLogsRep, RestTemplate restTemplate) {
-        this.cacheSer = cacheSer;
-        this.userRep = userRep;
-        this.rolesRep = rolesRep;
-        this.addressesRep = addressesRep;
-        this.municipalyRep = municipalyRep;
-        this.departamentsRep = departamentsRep;
-        this.activityLogsRep = activityLogsRep;
-        this.restTemplate = restTemplate;
-    }
 
     public void sendEmailNotification(String email, String subject, String body) {
 
@@ -91,8 +85,13 @@ public class UserSer {
                 //verify if email exist
                 if(checkEmailExists(userDTO.email(), true)) 
                     throw new AlreadyExistException("That user already exist");
-
+                
                 validateCode(userDTO.email(), userDTO.code());
+
+                Long idUser = null;
+
+                if(Boolean.TRUE.equals(userRep.existsByEmailIgnoreCase(userDTO.email())))
+                    idUser = Utils.getUserByEmail(userDTO.email(), userRep).id();
 
                 //create default role
                 Roles defaultRole = rolesRep.findByRole(RolesList.USER_ROLE)
@@ -101,11 +100,15 @@ public class UserSer {
                 //encrypt the password
                 String hashedPassword = pwe.encode(userDTO.password()); 
 
+                Utils.showMessage(userDTO.enterprise());
+                //get id enterprise
+                Long idEnterprise = getEnterprise(userDTO.enterprise());
+
                 //set and save user
                 Users newUser = 
                     new Users(
-                        null, userDTO.firstName(), userDTO.lastName(), userDTO.email(), userDTO.celPhone(), 
-                        userDTO.birthdate(), userDTO.gender(), hashedPassword, null, null);
+                        idUser, userDTO.firstName(), userDTO.lastName(), userDTO.email(), userDTO.celPhone(), 
+                        userDTO.birthdate(), userDTO.gender(), hashedPassword, idEnterprise, null, null);
                 newUser.addRole(defaultRole);
                 
                 newUser = userRep.save(newUser);
@@ -123,7 +126,9 @@ public class UserSer {
 
     //verify if user exist
     public boolean checkEmailExists(String value, boolean signup) {
-        boolean result = userRep.existsByEmailIgnoreCase(value);
+        Utils.showMessage("exists: "+userRep.existsByEmailIgnoreCase(value));
+        Utils.showMessage("wasRegister: "+userRep.wasRegister(value));
+        boolean result = userRep.existsByEmailIgnoreCase(value) && userRep.wasRegister(value);
         return signup ? result : !result;
     }
 
@@ -137,7 +142,9 @@ public class UserSer {
 
     public UserDTO getUserAuthDTO(){
         Users user = getUserAuthenticated();
-        return new UserDTO(null, user.firstName(), user.lastName(), user.email(), user.celPhone(), user.birthdate(), user.gender(), null, null);
+        Utils.showMessage("id enterprise: "+user.idEnterprise());
+        String enterpriseName = user.idEnterprise() == null ? "" : Utils.getEnterprise(user.idEnterprise(), enterprisesRep).name();
+        return new UserDTO(null, user.firstName(), user.lastName(), user.email(), user.celPhone(), user.birthdate(), user.gender(), null, null, enterpriseName);
     }
 
     public MainUser getMainUser(String email){
@@ -163,10 +170,12 @@ public class UserSer {
         //numberUpdates
         Utils.addTriesCache("update",user.id().toString(),3, cacheSer);
 
+        Long idEnterprise = getEnterprise(userDTO.enterprise());
+
         Users userUpdated = new Users(
             user.id(), userDTO.firstName(), userDTO.lastName(), user.email(), 
             userDTO.celPhone(), userDTO.birthdate(), userDTO.gender(), 
-            user.password(), user.roles(), user.addresses());
+            user.password(), idEnterprise, user.roles(), user.addresses());
         
         String logMessage = compareUpdateUserData(user,userUpdated);
 
@@ -183,6 +192,45 @@ public class UserSer {
         Users user = getUserAuthenticated();
         List<AddressesDTO> addressesDTO = getAddressesFromDatabase(user);
         return new AddressesResponse(addressesDTO);
+    }
+
+    public AddressesResponse getAddresses(Long id){
+        Users user = getUser(id);
+        List<AddressesDTO> addressesDTO = getAddressesFromDatabase(user);
+        return new AddressesResponse(addressesDTO);
+    }
+
+    public String createUsers(UserDTO userDTO) throws RuntimeException {
+
+        class CreateUser{
+
+            String createUser() throws RuntimeException{
+                //verify if email exist
+                if(Boolean.TRUE.equals(userRep.existsByEmailIgnoreCase((userDTO.email()))))
+                    throw new AlreadyExistException("That user already exist");
+
+                //get id enterprise
+                Long idEnterprise = getEnterprise(userDTO.enterprise());
+
+                //set and save user
+                Users newUser = 
+                    new Users(
+                        null, userDTO.firstName(), userDTO.lastName(), userDTO.email(), userDTO.celPhone(), 
+                        userDTO.birthdate(), userDTO.gender(), null, idEnterprise, null, null);
+
+                userRep.save(newUser);
+                
+                Users adminUser = getUserAuthenticated();
+
+                ActivityLogs log = new ActivityLogs(null, "El administrador agrego un nuevo usuario: "+userDTO.email(), LocalDateTime.now(), adminUser.id());
+                activityLogsRep.save(log);
+
+                return "User Created";
+            }
+        }
+
+        CreateUser innerClass = new CreateUser();
+        return innerClass.createUser();
     }
 
     @Cacheable(value = "getAddresses", key = "#user.id()")
@@ -373,6 +421,27 @@ public class UserSer {
             .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    public UserResponse getUsers(){
+        List<Users> users = userRep.findUsers();
+        List<UserDTO> userDTOs = new ArrayList<>();
+        users.stream().forEach(user ->{
+            UserDTO userDto = new UserDTO(
+                user.id(), user.firstName(), user.lastName(), null, null, 
+                null, null, null, null, null);
+                userDTOs.add(userDto);
+        });
+        return new UserResponse(userDTOs);
+    }
+
+    public EnumResponse1 getEnterprises(String name){
+        List<Enterprises> enterprises = enterprisesRep.findEnterprises(name);
+        List<Enum1DTO> enterpriseDTO = new ArrayList<>();
+        enterprises.stream().forEach(enterprise ->
+            enterpriseDTO.add(new Enum1DTO(enterprise.id().intValue() , enterprise.name())));
+
+        return new EnumResponse1(enterpriseDTO);
+    }
+
     private String getUsername(){
         Authentication authentication = 
             SecurityContextHolder.getContext().getAuthentication();
@@ -390,7 +459,7 @@ public class UserSer {
         
         userRep.save(new Users(
             user.id(), user.firstName(), user.lastName(), user.email(), user.celPhone(), 
-            user.birthdate(), user.gender(), pwNew, user.roles(), user.addresses()));
+            user.birthdate(), user.gender(), pwNew, user.idEnterprise(), user.roles(), user.addresses()));
         
         return new MessageDTO("Password updated successfully");
     }
@@ -403,6 +472,7 @@ public class UserSer {
         count += compareAndAppendChange(log, count, "apellido", current.lastName(), updated.lastName());
         count += compareAndAppendChange(log, count, "número de celular", current.celPhone(), updated.celPhone());
         count += compareAndAppendChange(log, count, "fecha de nacimiento", current.birthdate(), updated.birthdate());
+        count += compareAndAppendChange(log, count, "enterprise", current.idEnterprise(), updated.idEnterprise());
         
         compareAndAppendChange(log, count, "género", current.gender(), updated.gender());
     
@@ -432,17 +502,45 @@ public class UserSer {
     }
     
     private int compareAndAppendChange(StringBuilder log, int count, String field, Object currentValue, Object updatedValue) {
-        if (!currentValue.equals(updatedValue)) {
+        Object current = currentValue==null ? "" : currentValue;
+        Object updated = updatedValue==null ? "" : updatedValue;
+        if (!current.equals(updated)) {
             log .append(count)
                 .append(". El Campo '")
                 .append(field)
                 .append("' fue cambiado de '")
-                .append(currentValue)
+                .append(current)
                 .append("' a '")
-                .append(updatedValue)
+                .append(updated)
                 .append("'\n");
                 return 1;
         }
         return 0;
+    }
+
+    public UserSer(CacheSer cacheSer, UserRep userRep, RolesRep rolesRep, AddressesRep addressesRep,
+            MunicipalyRep municipalyRep, DepartamentsRep departamentsRep, ActivityLogsRep activityLogsRep,
+            RestTemplate restTemplate, EnterprisesRep enterprisesRep) {
+        this.cacheSer = cacheSer;
+        this.userRep = userRep;
+        this.rolesRep = rolesRep;
+        this.addressesRep = addressesRep;
+        this.municipalyRep = municipalyRep;
+        this.departamentsRep = departamentsRep;
+        this.activityLogsRep = activityLogsRep;
+        this.restTemplate = restTemplate;
+        this.enterprisesRep = enterprisesRep;
+    }
+
+    private Long getEnterprise(String name){
+        if (name.equals("") || name == null) return null;
+        Enterprises enterprise;
+        if (Boolean.TRUE.equals(enterprisesRep.existsByNameIgnoreCase(name))) {
+            enterprise = enterprisesRep.findByName(name)
+                .orElseThrow(() -> new RuntimeException("Enterprise not found"));
+            return enterprise.id();
+        }
+        enterprise = enterprisesRep.save(new Enterprises(null, name));
+        return enterprise.id();
     }
 }

@@ -12,6 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { Enum1 } from 'src/app/models/enums/enum1/enum1';
 import { NamesFieldComponent } from '../../form-fields-components/names-field/names-field.component';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @Component({
     selector: 'app-edit-personal-info',
@@ -21,7 +22,7 @@ import { NamesFieldComponent } from '../../form-fields-components/names-field/na
     imports: [
       CommonModule, MatFormFieldModule, ReactiveFormsModule, DateFieldComponent, 
       SelectorFieldComponent, CelPhoneFieldComponent, MatFormFieldModule, MatInputModule, 
-      MatButtonModule, NamesFieldComponent]
+      MatButtonModule, NamesFieldComponent, MatAutocompleteModule,]
 })
 export class EditPersonalInfoComponent implements OnInit{
   isUpdated: boolean = false;
@@ -30,6 +31,7 @@ export class EditPersonalInfoComponent implements OnInit{
   isLogged: boolean = this.ref != null;
   response: boolean = false;
   genders:Enum1[] = this.userSer.genders;
+  enterprises!: Enum1[];
 
   constructor(private userSer: UsersService, private router: Router){}
 
@@ -38,13 +40,13 @@ export class EditPersonalInfoComponent implements OnInit{
 
     this.userSer.getUser().subscribe({
       next: r => {
-        console.log(r);
         this.response = true;
         this.userFormGroup.patchValue({
           firstName: r.firstName,
           lastName: r.lastName,
           celPhone: r.celPhone,
-          birthdate: r.birthdate+'T00:00:00',
+          enterprise: r.enterprise,
+          birthdate: r.birthdate == null ? null : r.birthdate+'T00:00:00',
           gender: r.gender
         });
       },
@@ -54,6 +56,24 @@ export class EditPersonalInfoComponent implements OnInit{
         window.location.reload();
       }
     });
+  }
+
+  searchEnterprises(event:any){
+    let value = event.target.value;
+    /* this.userFormGroup.get('enterprise')?.setValue(value);
+    console.log(this.userFormGroup.get('enterprise')); */
+    if (value.length >1) {
+      this.userSer.getEnterprises(value).subscribe({
+        next: r => {
+          this.enterprises = r.data;
+        },
+        error: error => {
+          console.error("Enterprise not found: ", error);
+        }
+      });
+    } else {
+      this.enterprises = [];
+    }
   }
 
   userFormGroup = new FormGroup({
@@ -70,6 +90,10 @@ export class EditPersonalInfoComponent implements OnInit{
     email: new FormControl( '', { validators: 
       [Validators.required, Validators.email],
       asyncValidators: uniqueValueValidator(this.userSer, true),
+      updateOn: 'blur'}),
+
+    enterprise: new FormControl('', { validators: 
+      [Validators.pattern('^[^0-9,!@#$%^&*()_+={}<>?/|\'":;`~]*$'), Validators.minLength(3)], 
       updateOn: 'blur'}),
 
     celPhone: new FormControl('', { validators: 

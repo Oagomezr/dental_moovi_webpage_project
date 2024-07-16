@@ -62,8 +62,8 @@
                         <app-hover-box-profile [hidden]="showHoverBoxProfile"
                         [nameUser]="name"></app-hover-box-profile>
                     </div>
-                    <button *ngIf="!isAdmin">Mis compras</button>
                     <a *ngIf="isAdmin" href="/manageOrders" >Mis pedidos</a>
+                    <a *ngIf="!isAdmin" href="/manageOrders" >Mis compras</a>
                     <button (click)="logout()">Salir <i class="material-icons">logout</i></button>
                 </div>
             </div>
