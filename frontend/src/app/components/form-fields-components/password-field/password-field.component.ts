@@ -18,8 +18,7 @@ export class PasswordFieldComponent {
   @Input() formPassword : FormControl = new FormControl('');
   hide = true;
 
-  togglePasswordVisibility(event: Event) {
-    event.preventDefault();
+  togglePasswordVisibility() {
     this.hide = !this.hide;
   }
 }

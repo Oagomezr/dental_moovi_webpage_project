@@ -53,6 +53,11 @@
             <i class="material-icons">production_quantity_limits</i> Garantía del producto
         </a>
         
-        <button [disabled]="complete" type="submit" class="fields" mat-raised-button color="primary" style="margin-top: 10px;">Comprar</button>
+        <button 
+            [disabled]="complete || cartSer.cartResponse.amountOfProducts == 0" 
+            type="submit" 
+            class="fields" 
+            mat-raised-button color="primary" 
+            style="margin-top: 10px;">Comprar</button>
     </div>
 </form>

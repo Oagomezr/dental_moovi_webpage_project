@@ -35,7 +35,6 @@ public class OrdersController {
         try {
             return ResponseEntity.ok(ordersSer.generateOrder(req, idAddress, false));
         } catch (Exception e) {
-            Utils.showMessage("error to generate order:"+e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
@@ -45,7 +44,7 @@ public class OrdersController {
         try {
             return ResponseEntity.ok(ordersSer.generateOrder(req, idAddress, true));
         } catch (Exception e) {
-            Utils.showMessage("error to generate order:"+e.getMessage());
+            Utils.showMessage("Error generate order by admin: "+e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }

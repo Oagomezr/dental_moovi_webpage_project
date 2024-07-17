@@ -31,6 +31,7 @@ export class OrderAdminComponent {
   selectedUserId: string = '';
   selectNotice: boolean = false;
   complete: boolean = false;
+  notProducts: boolean = false;
   cartRequest: CartRequest = { data:[] , idUser: 0 };
   ref:string | null = localStorage.getItem('isLogged');
 
@@ -81,6 +82,7 @@ export class OrderAdminComponent {
             window.location.reload();
           }, 3000);
         },error: e =>{
+          this.notProducts = true;
           console.log(e);
         }
       });

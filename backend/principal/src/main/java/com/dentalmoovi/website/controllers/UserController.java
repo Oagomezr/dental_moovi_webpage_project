@@ -37,7 +37,6 @@ public class UserController {
             userSer.createUser(userDTO);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (Exception e) {
-            Utils.showMessage(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
@@ -48,7 +47,6 @@ public class UserController {
             userSer.createUsers(userDTO);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (Exception e) {
-            Utils.showMessage(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
@@ -72,7 +70,16 @@ public class UserController {
             UserDTO userDTO = userSer.getUserAuthDTO();
             return ResponseEntity.ok(userDTO);
         } catch (Exception e) {
-            Utils.showMessage("error get user: "+e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @GetMapping("/api/admin/getUser/{id}")
+    public ResponseEntity<UserDTO> getUser(@PathVariable("id") Long id){
+        try {
+            UserDTO userDTO = userSer.getUserDTO(id);
+            return ResponseEntity.ok(userDTO);
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
@@ -82,15 +89,34 @@ public class UserController {
         try {
             return ResponseEntity.ok(userSer.updateUserInfo(userDTO));
         } catch (Exception e) {
-            Utils.showMessage("error update user: "+e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
+
+    @PutMapping("/api/admin/update")
+    public ResponseEntity<MessageDTO> updateUserA(@RequestBody UserDTO userDTO){
+        try {
+            return ResponseEntity.ok(userSer.updateUserInfoByAdmin(userDTO));
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
 
     @PostMapping("/api/user/addAddress")
     public ResponseEntity<MessageDTO> createAddress(@RequestBody AddressesDTO addressDTO){
         try {
             userSer.createAddress(addressDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @PostMapping("/api/admin/addAddress/{id}")
+    public ResponseEntity<MessageDTO> createAddress(@RequestBody AddressesDTO addressDTO, @PathVariable("id") Long id){
+        try {
+            userSer.createAddress(addressDTO, id);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -115,10 +141,38 @@ public class UserController {
         }
     }
 
+    @GetMapping("/api/user/getAddress/{id}")
+    public ResponseEntity<AddressesDTO> getAddress(@PathVariable("id") Long id){
+        try {
+            return ResponseEntity.ok(userSer.getAddress(id));
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @GetMapping("/api/admin/getAddress/{id}")
+    public ResponseEntity<AddressesDTO> getAddressA(@PathVariable("id") Long id){
+        try {
+            return ResponseEntity.ok(userSer.getAddressById(id));
+        } catch (Exception e) {
+            Utils.showMessage(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
     @PutMapping("/api/user/updateAddress")
     public ResponseEntity<MessageDTO> updateAddress(@RequestBody AddressesDTO addressDTO){
         try {
             return ResponseEntity.ok(userSer.updateAddress(addressDTO));
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @PutMapping("/api/admin/updateAddress")
+    public ResponseEntity<MessageDTO> updateAddressA(@RequestBody AddressesDTO addressDTO){
+        try {
+            return ResponseEntity.ok(userSer.updateAddressByAdmin(addressDTO));
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

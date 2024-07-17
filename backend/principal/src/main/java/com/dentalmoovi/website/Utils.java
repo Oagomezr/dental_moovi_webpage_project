@@ -115,6 +115,12 @@ public class Utils {
             .orElseThrow(() -> new RuntimeException("User "+email+" not found"));
     }
 
+    //@Cacheable(value = "getUserById", key = "#id")
+    public static Users getUserById(Long id, UserRep userRep){
+        return userRep.findById(id)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
     public static void addTriesCache(String label, String key, int nTries, CacheSer cacheSer){
         String keyCache = label+" "+key;
         Integer tries = cacheSer.getFromNumberTries(keyCache);

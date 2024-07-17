@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
@@ -100,7 +101,6 @@ public class UserSer {
                 //encrypt the password
                 String hashedPassword = pwe.encode(userDTO.password()); 
 
-                Utils.showMessage(userDTO.enterprise());
                 //get id enterprise
                 Long idEnterprise = getEnterprise(userDTO.enterprise());
 
@@ -126,8 +126,6 @@ public class UserSer {
 
     //verify if user exist
     public boolean checkEmailExists(String value, boolean signup) {
-        Utils.showMessage("exists: "+userRep.existsByEmailIgnoreCase(value));
-        Utils.showMessage("wasRegister: "+userRep.wasRegister(value));
         boolean result = userRep.existsByEmailIgnoreCase(value) && userRep.wasRegister(value);
         return signup ? result : !result;
     }
@@ -142,9 +140,12 @@ public class UserSer {
 
     public UserDTO getUserAuthDTO(){
         Users user = getUserAuthenticated();
-        Utils.showMessage("id enterprise: "+user.idEnterprise());
-        String enterpriseName = user.idEnterprise() == null ? "" : Utils.getEnterprise(user.idEnterprise(), enterprisesRep).name();
-        return new UserDTO(null, user.firstName(), user.lastName(), user.email(), user.celPhone(), user.birthdate(), user.gender(), null, null, enterpriseName);
+        return getUserDTO(user);
+    }
+
+    public UserDTO getUserDTO(Long id){
+        Users user = getUser(id);
+        return getUserDTO(user);
     }
 
     public MainUser getMainUser(String email){
@@ -163,39 +164,27 @@ public class UserSer {
         return mainUser.getCacheRef();
     }
 
-    @CacheEvict(value = "getUserByEmail", key = "#userDTO.email")
+    public MessageDTO updateUserInfoByAdmin(UserDTO userDTO) throws IllegalArgumentException{
+        Users user =  getUser(userDTO.idUser());
+        return updateUserInfo(userDTO, user);
+    }
+
     public MessageDTO updateUserInfo(UserDTO userDTO) throws IllegalArgumentException{
-        Users user = getUserAuthenticated();
-
-        //numberUpdates
-        Utils.addTriesCache("update",user.id().toString(),3, cacheSer);
-
-        Long idEnterprise = getEnterprise(userDTO.enterprise());
-
-        Users userUpdated = new Users(
-            user.id(), userDTO.firstName(), userDTO.lastName(), user.email(), 
-            userDTO.celPhone(), userDTO.birthdate(), userDTO.gender(), 
-            user.password(), idEnterprise, user.roles(), user.addresses());
-        
-        String logMessage = compareUpdateUserData(user,userUpdated);
-
-        if (!logMessage.equals("El usuario actualizo sus datos personales: ")) {
-            ActivityLogs log = new ActivityLogs(null, logMessage, LocalDateTime.now(), user.id());
-            activityLogsRep.save(log);
-            userRep.save(userUpdated);
-        }
-
-        return new MessageDTO("User updated");
+        Users user =  getUserAuthenticated();
+        return updateUserInfo(userDTO, user);
     }
     
     public AddressesResponse getAddresses(){
         Users user = getUserAuthenticated();
-        List<AddressesDTO> addressesDTO = getAddressesFromDatabase(user);
-        return new AddressesResponse(addressesDTO);
+        return getAddresses(user);
     }
 
     public AddressesResponse getAddresses(Long id){
         Users user = getUser(id);
+        return getAddresses(user);
+    }
+
+    private AddressesResponse getAddresses(Users user){
         List<AddressesDTO> addressesDTO = getAddressesFromDatabase(user);
         return new AddressesResponse(addressesDTO);
     }
@@ -233,14 +222,54 @@ public class UserSer {
         return innerClass.createUser();
     }
 
+    @CacheEvict(value = "getUserByEmail", key = "#userDTO.email")
+    private MessageDTO updateUserInfo(UserDTO userDTO, Users user) throws IllegalArgumentException{
+
+        //numberUpdates
+        Utils.addTriesCache("update",user.id().toString(),3, cacheSer);
+
+        Long idEnterprise = getEnterprise(userDTO.enterprise());
+
+        Users userUpdated = new Users(
+            user.id(), userDTO.firstName(), userDTO.lastName(), user.email(), 
+            userDTO.celPhone(), userDTO.birthdate(), userDTO.gender(), 
+            user.password(), idEnterprise, user.roles(), user.addresses());
+        
+        String logMessage = compareUpdateUserData(user,userUpdated);
+
+        if (!logMessage.equals("El usuario actualizo sus datos personales: ")) {
+            ActivityLogs log = new ActivityLogs(null, logMessage, LocalDateTime.now(), user.id());
+            activityLogsRep.save(log);
+            userRep.save(userUpdated);
+        }
+
+        return new MessageDTO("User updated");
+    }
+
+
+
     @Cacheable(value = "getAddresses", key = "#user.id()")
     private List<AddressesDTO> getAddressesFromDatabase(Users user){
         List<Long> idsAddresses = new ArrayList<>(user.getAddressesIds());
         List<AddressesDTO> addressesDTO = new ArrayList<>();
         
         idsAddresses.stream().forEach(id ->{
+            AddressesDTO addressDTO = getAddressById(id);
+            addressesDTO.add(addressDTO);
+        });
 
-            Addresses address = addressesRep.findById(id)
+        return addressesDTO;
+    }
+
+    public AddressesDTO getAddress(Long id){
+        Users user = getUserAuthenticated();
+        List<Long> idsAddresses = new ArrayList<>(user.getAddressesIds());
+        boolean belongUser = idsAddresses.stream().anyMatch(iduser -> Objects.equals(id, iduser));
+        return belongUser ? getAddressById(id) : null;
+    }
+
+    public AddressesDTO getAddressById(Long id){
+        Addresses address = addressesRep.findById(id)
                 .orElseThrow(() -> new RuntimeException("Address not found"));
 
             MunicipalyCity municipaly = municipalyRep.findById(address.idMunicipalyCity())
@@ -249,20 +278,22 @@ public class UserSer {
             Departaments departament = departamentsRep.findById(municipaly.id_departament())
                 .orElseThrow(() -> new RuntimeException("Departament not found"));
 
-            AddressesDTO addressDTO = new AddressesDTO(
+            return new AddressesDTO(
                 address.id(), address.address(), address.phone(), address.description(), 
                 municipaly.name(), departament.name(), 0);
-                
-            addressesDTO.add(addressDTO);
-        });
-
-        return addressesDTO;
+    }
+    
+    public MessageDTO createAddress(AddressesDTO addressDTO, Long idUser){
+        Users user = getUser(idUser);
+        return createAddress(user, addressDTO);
     }
 
     public MessageDTO createAddress(AddressesDTO addressDTO){
-            
         Users user = getUserAuthenticated();
+        return createAddress(user, addressDTO);
+    }
 
+    private MessageDTO createAddress(Users user, AddressesDTO addressDTO){
         //numberUpdates
         Utils.addTriesCache("createAddress",user.id().toString(),3, cacheSer);
 
@@ -297,6 +328,22 @@ public class UserSer {
 
         Users user = getUserAuthenticated();
 
+        List<Long> idsAddresses = new ArrayList<>(user.getAddressesIds());
+        boolean belongUser = idsAddresses.stream().anyMatch(iduser -> Objects.equals(addressDTO.id(), iduser));
+
+        if (!belongUser) 
+            throw new IncorrectException("That address don't belong to the user");
+
+        return updateAddress(user, addressDTO);
+    }
+
+    @CacheEvict(value = "getAddresses", key = "#user.id()")
+    public MessageDTO updateAddressByAdmin(AddressesDTO addressDTO){
+        Users user = getUserAuthenticated();
+        return updateAddress(user, addressDTO);
+    }
+
+    private MessageDTO updateAddress(Users user, AddressesDTO addressDTO){
         Addresses newAddress = new Addresses(
             addressDTO.id(), addressDTO.address(), addressDTO.phone(), 
             addressDTO.description(), addressDTO.idMunicipaly());
@@ -405,8 +452,6 @@ public class UserSer {
             emailServiceUrl+"/isCodeCorrect/"+key+"/"+codeEntered, Boolean.class
             ).getBody();
 
-        Utils.showMessage(Boolean.TRUE.equals(isCorrect) ? "si" : "no");
-
         //verify if code sended is equals the verification code
         if(Boolean.FALSE.equals(isCorrect)) {
             cacheSer.addToOrUpdateNumberTries(key, tries+1);
@@ -417,8 +462,7 @@ public class UserSer {
     }
     
     public Users getUser(long id){
-        return userRep.findById(id)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+        return Utils.getUserById(id, userRep);
     }
 
     public UserResponse getUsers(){
@@ -440,6 +484,11 @@ public class UserSer {
             enterpriseDTO.add(new Enum1DTO(enterprise.id().intValue() , enterprise.name())));
 
         return new EnumResponse1(enterpriseDTO);
+    }
+
+    private UserDTO getUserDTO(Users user){
+        String enterpriseName = user.idEnterprise() == null ? "" : Utils.getEnterprise(user.idEnterprise(), enterprisesRep).name();
+        return new UserDTO(null, user.firstName(), user.lastName(), user.email(), user.celPhone(), user.birthdate(), user.gender(), null, null, enterpriseName);
     }
 
     private String getUsername(){

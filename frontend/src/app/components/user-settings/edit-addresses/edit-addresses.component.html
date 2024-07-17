@@ -1,6 +1,6 @@
 <div class="all-page">
     <h3 class="delete-notice" *ngIf="isDelete">Domicilio eliminado con exito</h3>
-    <a class="setting" href="settings/addresses/address">
+    <a class="setting" href="settings/addresses/0/0">
         <div class="icon">
             <i class="material-icons">add_circle</i>
         </div>
@@ -11,7 +11,7 @@
     </a>
 
     <div *ngFor="let address of addresses; let i = index" class="addresses-box">
-        <button (click)="selectAddress(i)" class="address-info">
+        <a [href]="'/settings/addresses/0/'+address.id" class="address-info">
             <div class="icon">
                 <i class="material-icons">location_on</i>
             </div>
@@ -19,9 +19,9 @@
                 <h2>{{ address.address }}</h2>
                 <p>{{ address.departament+" "+address.location }}</p>
             </div>
-        </button>
+        </a>
         
-        <button class="delete" (click)="openDialog(i)">
+        <button class="delete" (click)="openDialog(address.id!, address.address!)">
             <i class="material-icons">delete</i>
         </button>
     </div>

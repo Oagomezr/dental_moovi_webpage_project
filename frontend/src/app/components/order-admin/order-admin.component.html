@@ -19,9 +19,9 @@
                         <p>{{ user.lastName }}</p>
                     </div>
                 </div>
-                <button >
+                <a [href]="'/settings/userInfo/'+user.idUser">
                     <i class="material-icons">edit</i>
-                </button>
+                </a>
 
             </label>
             <a class="setting" href="/signup">
@@ -37,6 +37,7 @@
     </div>
     <div class="addresses-part parts">
         <h3 class="address-advice advice" *ngIf="selectNotice">Por favor selecciona una dirección para enviar el pedido</h3>
+        <h3 class="address-advice advice" *ngIf="notProducts">No hay productos en el carro para la cotización</h3>
         <h3 class="order-complete advice" *ngIf="complete">Pedido solicitado con exito.</h3>
         <h2>Elige la dirección de envió</h2>
         <div class="fields">
@@ -53,16 +54,22 @@
                         <p>{{ address.departament+" "+address.location }}</p>
                     </div>
                 </div>
+                <div>   
+                    <a [href]="'/settings/addresses/0/'+address.id">
+                        <i class="material-icons">edit</i>
+                    </a>
+                </div>
+                
             </label>
-            <button class="setting" href="settings/addresses/address">
+            <a class="setting" *ngIf="selectedUserId != ''" [href]="'/settings/addresses/'+selectedUserId+'/0'">
                 <div class="icon">
                     <i class="material-icons">add_circle</i>
                 </div>
                 <div class="option-info">
-                    <h2>Añadir dirección</h2>
-                    <p>Añade una nueva dirección de envio</p>
+                    <h2>Añadir dirección al usuario</h2>
+                    <p>Añadir nueva dirección al usuario seleccionado</p>
                 </div>
-            </button>
+            </a>
         </div>
     </div>
     <div class="details-part">
@@ -89,6 +96,11 @@
             <i class="material-icons">production_quantity_limits</i> Garantía del producto
         </a>
         
-        <button type="submit" class="fields" mat-raised-button color="primary" style="margin-top: 10px;" [disabled]="complete">Comprar</button>
+        <button 
+            type="submit" 
+            class="fields" 
+            mat-raised-button color="primary" 
+            style="margin-top: 10px;" 
+            [disabled]="complete || cartSer.cartResponse.amountOfProducts == 0">Comprar</button>
     </div>
 </form>

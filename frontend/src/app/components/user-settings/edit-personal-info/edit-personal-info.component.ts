@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { UsersService } from 'src/app/services/user/users.service';
 import { uniqueValueValidator } from 'src/app/validators/userFieldsValidator';
 import { DateFieldComponent } from "../../form-fields-components/date-field/date-field.component";
@@ -33,11 +33,18 @@ export class EditPersonalInfoComponent implements OnInit{
   genders:Enum1[] = this.userSer.genders;
   enterprises!: Enum1[];
 
-  constructor(private userSer: UsersService, private router: Router){}
+  constructor(private route: ActivatedRoute, private userSer: UsersService, private router: Router){}
 
   ngOnInit(){
     if(!this.isLogged) this.router.navigate(['/']);
+    
+    this.route.params.subscribe((params: Params) => {
+      let id = params['id'];
+      id == 0 ? this.getUser() : this.getUserById(id);
+    });
+  }
 
+  getUser(){
     this.userSer.getUser().subscribe({
       next: r => {
         this.response = true;
@@ -53,6 +60,30 @@ export class EditPersonalInfoComponent implements OnInit{
       error: error => {
         localStorage.clear();
         console.log("Error to get user info", error);
+        
+        window.location.reload();
+      }
+    });
+  }
+
+  getUserById(id:number){
+    this.userSer.getUserById(id).subscribe({
+      next: r => {
+        this.response = true;
+        this.userFormGroup.patchValue({
+          idUser: id,
+          firstName: r.firstName,
+          lastName: r.lastName,
+          celPhone: r.celPhone,
+          enterprise: r.enterprise,
+          birthdate: r.birthdate == null ? null : r.birthdate+'T00:00:00',
+          gender: r.gender
+        });
+      },
+      error: error => {
+        localStorage.clear();
+        this.router.navigate(['/']);
+        console.log("Error to get user info", error);
         window.location.reload();
       }
     });
@@ -60,8 +91,6 @@ export class EditPersonalInfoComponent implements OnInit{
 
   searchEnterprises(event:any){
     let value = event.target.value;
-    /* this.userFormGroup.get('enterprise')?.setValue(value);
-    console.log(this.userFormGroup.get('enterprise')); */
     if (value.length >1) {
       this.userSer.getEnterprises(value).subscribe({
         next: r => {

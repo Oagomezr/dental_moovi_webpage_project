@@ -18,6 +18,7 @@ export class UsersService {
 
   isAdmin: boolean = localStorage.getItem('isAdmin') != null;
   access: string = this.isAdmin ? "admin" : "public";
+  access2: string = this.isAdmin ? "admin" : "user";
 
   constructor(private http: HttpClient) {}
 
@@ -37,6 +38,10 @@ export class UsersService {
     return this.http.get<Users>(`${environment.url_back}/user/getUser`, {withCredentials:true});
   }
 
+  getUserById(id:number): Observable<Users>{
+    return this.http.get<Users>(`${environment.url_back}/admin/getUser/${id}`, {withCredentials:true});
+  }
+
   getUsers(): Observable<UserResponse>{
     return this.http.get<UserResponse>(`${environment.url_back}/admin/getUsers`, {withCredentials:true});
   }
@@ -46,11 +51,15 @@ export class UsersService {
   }
 
   updateUser(user: Users): Observable<message>{
-    return this.http.put<message>(`${environment.url_back}/user/update`, user, {withCredentials:true});
+    return this.http.put<message>(`${environment.url_back}/${this.access2}/update`, user, {withCredentials:true});
   }
 
   addAddress(address:AddressesData): Observable<message>{
     return this.http.post<message>(`${environment.url_back}/user/addAddress`, address, {withCredentials:true});
+  }
+
+  addAddressAdmin(address:AddressesData, id:number): Observable<message>{
+    return this.http.post<message>(`${environment.url_back}/admin/addAddress/${id}`, address, {withCredentials:true});
   }
 
   getAddresses(): Observable<AddressesResponse>{
@@ -61,8 +70,12 @@ export class UsersService {
     return this.http.get<AddressesResponse>(`${environment.url_back}/admin/getAddresses/${id}`, {withCredentials:true});
   }
 
+  getAddress(id:number): Observable<AddressesData>{
+    return this.http.get<AddressesData>(`${environment.url_back}/${this.access2}/getAddress/${id}`, {withCredentials:true});
+  }
+
   updateAddress(address:AddressesData): Observable<message>{
-    return this.http.put<message>(`${environment.url_back}/user/updateAddress`, address, {withCredentials:true});
+    return this.http.put<message>(`${environment.url_back}/${this.access2}/updateAddress`, address, {withCredentials:true});
   }
 
   deleteAddress(id:number): Observable<message>{

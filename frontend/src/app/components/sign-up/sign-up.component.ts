@@ -177,12 +177,15 @@ export class SignUpComponent {
     if (/^\d*$/.test(this.userFormGroup.get('code')?.value || 'x')) {
       this.userService.createUser(this.userFormGroup.value).subscribe({
         next: () => {
-          this.showRegisterOK = true;
-          localStorage.removeItem("register");
-          localStorage.setItem("register", "true");
-          setTimeout(() => {
-            this.router.navigate(['/login']);
-          }, 3000);
+          if(this.isAdmin) this.router.navigate(['/orderAdmin']);
+          else{
+            this.showRegisterOK = true;
+            localStorage.removeItem("register");
+            localStorage.setItem("register", "true");
+            setTimeout(() => {
+              this.router.navigate(['/login']);
+            }, 3000);
+          }
         },
         error: error => {
           console.error(error);

@@ -25,9 +25,8 @@ export class EditAddressesComponent {
   ngOnInit(){
     localStorage.removeItem("addressChosen");
     this.userService.getAddresses().subscribe({
-      next: response=>{
-        console.log(response);
-        this.addresses = response.data;
+      next: r=>{
+        this.addresses = r.data;
       },error: e =>{
         console.log(e);
         this.router.navigate(['login']);
@@ -35,25 +34,19 @@ export class EditAddressesComponent {
     });
   }
 
-  selectAddress(index:number){
-    let addressChosen = JSON.stringify(this.addresses[index]);
-    localStorage.setItem('addressChosen', addressChosen);
-    this.router.navigate(['settings/addresses/address']);
-  }
-
-  openDialog(index:number){
+  openDialog(id:number, address:string){
 
     const dialogRef = this.dialog.open(DialogComponent, {
       width: '390px',
       data: {
         title: 'Confirmación',
-        message: "¿Segur@ que deseas eliminar el domicilio: "+this.addresses[index].address+ "?"
+        message: "¿Segur@ que deseas eliminar el domicilio: "+address+ "?"
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.userService.deleteAddress(this.addresses[index].id!).subscribe({
+        this.userService.deleteAddress(id).subscribe({
           next:()=>{
             this.isDelete = true;
             setTimeout(() => {

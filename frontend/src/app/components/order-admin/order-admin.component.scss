@@ -1,7 +1,8 @@
 .content-component{
     display: flex;
     width: 90%;
-    margin: 0 5%;
+    padding: 0 5%;
+    height: auto;
 
     .users-part{
         width: 30%;
@@ -13,8 +14,9 @@
 
     .parts{
         height: 400px;
-        padding-top: 10px;
-        top: 50px;
+        //padding-top: 10px;
+        padding-top: 50px;
+        padding-bottom: 50px;
         left: 0px;
         position:relative;
         display: flex;
