@@ -32,15 +32,15 @@ export class ProductsService {
     return this.http.get<ProductsResponse>(`${environment.url_back}/${this.access}/products/search/${search}/${limit}/${currentPage}/${productsPerPage}`, {withCredentials:this.isAdmin});
   }
 
-  updateMainImage(idImage: number, productName: string): Observable<message>{
-    return this.http.put<message>(`${environment.url_back}/admin/products/updateMainImage/${productName}`, idImage, {withCredentials:true});
+  updateMainImage(idImage: number, idProduct: number): Observable<message>{
+    return this.http.put<message>(`${environment.url_back}/admin/products/updateMainImage/${idProduct}`, idImage, {withCredentials:true});
   }
 
-  uploadImage(file: File, product: string) {
+  uploadImage(file: File, idProduct: number) {
     const formData = new FormData();
     formData.append('file', file, file.name);
 
-    return this.http.post(`${environment.url_back}/admin/products/uploadImage/${product}`, formData, {withCredentials:true});
+    return this.http.post(`${environment.url_back}/admin/products/uploadImage/${idProduct}`, formData, {withCredentials:true});
   }
 
   deleteImage(parameter:any): Observable<message>{
@@ -51,15 +51,15 @@ export class ProductsService {
     return this.http.put<message>(`${environment.url_back}/admin/products/visibility/${productName}`, !visibility, {withCredentials:true});
   }
 
-  updateProductInfo(option: number, productName: string, newInfo: string): Observable<message>{
-    return this.http.put<message>(`${environment.url_back}/admin/products/updateProductInfo/${productName}/${option}`, newInfo, {withCredentials:true});
+  updateProductInfo(option: number, idProduct: number, newInfo: string): Observable<message>{
+    return this.http.put<message>(`${environment.url_back}/admin/products/updateProductInfo/${idProduct}/${option}`, newInfo, {withCredentials:true});
   }
 
-  updateProductInformation(option:number, productName:string, newValue:any){
-    this.updateProductInfo(option, productName, newValue).subscribe({
+  updateProductInformation(option:number, idProduct:number, newValue:any){
+    this.updateProductInfo(option, idProduct, newValue).subscribe({
       next: ()=>{
         if(option == 0){
-          this.router.navigate([`/product/${newValue}`]).then(() => {
+          this.router.navigate([`/product/${idProduct}`]).then(() => {
             window.location.reload();
           });
         }else{
@@ -72,8 +72,8 @@ export class ProductsService {
     });
   }
 
-  createProduct(categoryName: string): Observable<boolean> {
-    return this.http.post<boolean>(`${environment.url_back}/admin/products/createProduct`, categoryName, {withCredentials:true});
+  createProduct(product: ProductsData): Observable<message> {
+    return this.http.post<message>(`${environment.url_back}/admin/products/createProduct`, product, {withCredentials:true});
   }
 
   getShoppingCartProducts(store: CartRequest): Observable<CartResponse>{

@@ -11,4 +11,5 @@ export interface ProductsData {
     location: string[];
     hidden:string | null;
     category: string | null;
+    idCategory: number;
 }

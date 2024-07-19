@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.dentalmoovi.website.Utils;
 import com.dentalmoovi.website.models.cart.CartRequest;
 import com.dentalmoovi.website.models.cart.CartResponse;
 import com.dentalmoovi.website.models.dtos.MessageDTO;
@@ -48,10 +49,10 @@ public class ProductsController {
         }
     }
 
-    @GetMapping("/api/public/products/{name}")
-    public ResponseEntity<ProductsDTO> getProduct(@PathVariable("name") String name){
+    @GetMapping("/api/public/products/{id}")
+    public ResponseEntity<ProductsDTO> getProduct(@PathVariable("id") Long id){
         try {
-            ProductsDTO products = productsSer.getProduct(name, false);
+            ProductsDTO products = productsSer.getProduct(id, false);
             return ResponseEntity.ok(products);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
@@ -69,23 +70,23 @@ public class ProductsController {
         }
     }
 
-    @PutMapping("/api/admin/products/updateMainImage/{productName}")
-    public ResponseEntity<MessageDTO> updateMainImage(@PathVariable("productName") String productName, @RequestBody long idImage) {
+    @PutMapping("/api/admin/products/updateMainImage/{idProduct}")
+    public ResponseEntity<MessageDTO> updateMainImage(@PathVariable("idProduct") Long id, @RequestBody long idImage) {
         try{
-            return ResponseEntity.ok(productsSer.updateMainImage(idImage, productName));
+            return ResponseEntity.ok(productsSer.updateMainImage(idImage, id));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @PostMapping("/api/admin/products/uploadImage/{productName}")
-    public ResponseEntity<MessageDTO> handleFileUpload(@RequestPart("file") MultipartFile file, @PathVariable("productName") String productName) throws java.io.IOException {
+    @PostMapping("/api/admin/products/uploadImage/{idProduct}")
+    public ResponseEntity<MessageDTO> handleFileUpload(@RequestPart("file") MultipartFile file, @PathVariable("idProduct") Long idProduct) throws java.io.IOException {
         if (file.isEmpty()) {
             logger.info("Archivo vacío");
             return ResponseEntity.badRequest().body(new MessageDTO("Archivo vacío"));
         }
         try {
-            return ResponseEntity.ok(productsSer.uploadImage(file, productName));
+            return ResponseEntity.ok(productsSer.uploadImage(file, idProduct));
         } catch (IOException e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(500).body(new MessageDTO("Error al procesar el archivo: " + e.getMessage()));
@@ -110,20 +111,20 @@ public class ProductsController {
         }
     }
 
-    @PutMapping("/api/admin/products/updateProductInfo/{productName}/{option}")
-    public ResponseEntity<MessageDTO> updateProductInfo(@PathVariable("productName") String productName, @PathVariable("option") int option, @RequestBody String newInfo) {
+    @PutMapping("/api/admin/products/updateProductInfo/{idProduct}/{option}")
+    public ResponseEntity<MessageDTO> updateProductInfo(@PathVariable("idProduct") Long idProduct, @PathVariable("option") int option, @RequestBody String newInfo) {
         try{
-            return ResponseEntity.ok(productsSer.updateProductInfo(option, productName, newInfo));
+            return ResponseEntity.ok(productsSer.updateProductInfo(option, idProduct, newInfo));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping("/api/admin/products/createProduct")
-    public ResponseEntity<Boolean> createProduct(@RequestBody String categoryName) {
+    public ResponseEntity<MessageDTO> createProduct(@RequestBody ProductsDTO product) {
         try{
-            productsSer.createProduct(categoryName);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            
+            return ResponseEntity.status(HttpStatus.CREATED).body(productsSer.createProduct(product));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
@@ -142,12 +143,13 @@ public class ProductsController {
         }
     }
 
-    @GetMapping("/api/admin/products/{name}")
-    public ResponseEntity<ProductsDTO> getProductA(@PathVariable("name") String name){
+    @GetMapping("/api/admin/products/{id}")
+    public ResponseEntity<ProductsDTO> getProductA(@PathVariable("id") Long id){
         try {
-            ProductsDTO products = productsSer.getProduct(name, true);
+            ProductsDTO products = productsSer.getProduct(id, true);
             return ResponseEntity.ok(products);
         } catch (Exception e) {
+            Utils.showMessage("Error al obtener el producto: "+e.getMessage());
             return ResponseEntity.notFound().build();
         }
     }

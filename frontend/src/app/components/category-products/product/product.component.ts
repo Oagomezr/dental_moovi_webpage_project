@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ProductsData } from 'src/app/models/products/productsData';
 import { ProductsService } from 'src/app/services/products/products.service';
 import { DialogComponent } from '../../dialog/dialog.component';
@@ -22,22 +22,25 @@ import { Enum1 } from 'src/app/models/enums/enum1/enum1';
 })
 export class ProductComponent {
 
-  constructor(private route: ActivatedRoute, 
+  constructor(private route: ActivatedRoute, private router: Router,
     private productSer: ProductsService, public dialog: MatDialog, private enumSer: EnumsService) {}
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
-      this.nameProduct = params['product'];
-      
-      this.productSer.getProductByName(this.nameProduct).subscribe({
-        next: response => {
-          this.product = response;
-          this.locationCategory = response.location;
-        },
-        error: error => {
-          console.error("error to load product: "+error);
-        }
-      });
+      let product = params['product'];
+      this.isNew = product == 0;
+      if(!this.isNew){
+        this.productSer.getProductByName(product).subscribe({
+          next: response => {
+            this.product = response;
+            this.nameProduct = response.nameProduct
+            this.locationCategory = response.location;
+          },
+          error: error => {
+            console.error("error to load product: "+error);
+          }
+        });
+      }
     });
   }
 
@@ -49,18 +52,20 @@ export class ProductComponent {
   textEdit: any = '';
   callerCart: CartDtoRequest[] = [];
   categories!: Enum1[];
+  isNew: boolean = false;
 
   product: ProductsData ={
     id:0,
-    nameProduct: '',
+    nameProduct: 'Nombre del nuevo producto',
     unitPrice: 0,
-    description: '',
-    shortDescription: '',
+    description: 'descripcion del nuevo producto',
+    shortDescription: 'descripcion corta nuevo producto',
     stock: 0,
     images:[],
     location: [],
     hidden: null,
-    category: null
+    category: null,
+    idCategory: 0
   };
 
   
@@ -122,7 +127,7 @@ export class ProductComponent {
     }
     console.log('Archivo seleccionado:', this.selectedFile);
     
-    this.productSer.uploadImage(this.selectedFile, this.product.nameProduct).subscribe({
+    this.productSer.uploadImage(this.selectedFile, this.product.id).subscribe({
       next: response => {
         console.log('Archivo subido con éxito al backend.', response);
         window.location.reload();
@@ -134,7 +139,7 @@ export class ProductComponent {
   }
 
   updateMainImage(idImage:number){
-    this.productSer.updateMainImage(idImage,this.product.nameProduct).subscribe({
+    this.productSer.updateMainImage(idImage,this.product.id).subscribe({
       next: () =>{
         window.location.reload();
       },
@@ -193,12 +198,40 @@ export class ProductComponent {
     }
   }
 
+  setProductInformation(option:number){
+    switch (option) {
+      case 0:
+        this.product.nameProduct = this.textEdit;
+      break;
+      case 1:
+        this.product.unitPrice = this.textEdit;
+      break;
+      case 2:
+        this.product.description = this.textEdit;
+      break;
+      case 3:
+        this.product.stock = this.textEdit;
+      break;
+      case 4:
+        console.log("category");
+      break;
+      default:
+        console.log("error");
+    }
+  }
+
   cancelProductInformation(){
     this.editArray =  [true, true, true, true, true];
   }
 
   updateProductInformation(option:number){
-    this.productSer.updateProductInformation(option, this.product.nameProduct, this.textEdit);
+    
+    if(this.isNew){
+      this.editArray[option] = !this.editArray[option];
+      this.setProductInformation(option);
+      console.log(this.product);
+    } 
+    else this.productSer.updateProductInformation(option, this.product.id, this.textEdit);
   }
 
   addToCart(id:number, prize:number, amount:string){
@@ -245,8 +278,20 @@ export class ProductComponent {
     }
   }
 
-  idCategory: number =  0;
-  setDepartament(id:number){
-    this.textEdit = id;
+  setCategory(id:number){
+    if(this.isNew){
+      this.product.idCategory = id;
+    } 
+    else this.textEdit = id;
+  }
+
+  createProduct(){
+    this.productSer.createProduct(this.product).subscribe({
+        next : r =>{
+          this.router.navigate(["/product/"+r.infoMessage]);
+        },error : error =>{
+            console.log(error);
+        }
+    });
   }
 }

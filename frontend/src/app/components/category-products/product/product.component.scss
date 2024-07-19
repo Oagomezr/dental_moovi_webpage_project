@@ -193,7 +193,6 @@
         }
 
         .product-add-cart{
-            background-color: yellow;
             position: relative;
             display: flex;
             align-items:flex-start;
@@ -226,7 +225,29 @@
                 opacity: 1;
                 height: 37px;
             }
+        }
 
+        .save-product{
+            position: relative;
+            display: flex;
+            align-items:flex-start;
+            justify-content:space-between;
+            text-decoration: none;
+            height: 40px;
+            margin-left: 5%;
+            margin-right: 5%;
+            margin-bottom: 5%;
+            button{
+                width: 100%;
+                margin-bottom: 5%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content:center;
+                i{
+                    padding-right: 5px;
+                }
+            }
         }
         
     }

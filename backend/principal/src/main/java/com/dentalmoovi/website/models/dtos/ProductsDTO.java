@@ -12,5 +12,6 @@ public record ProductsDTO(
     List<ImagesDTO> images,
     List<String> location,
     String hidden,
-    String category
+    String category,
+    Long idCategory
 ) {}

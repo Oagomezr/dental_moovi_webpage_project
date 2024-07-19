@@ -90,19 +90,8 @@ export class ProductsComponent {
         this.productEdit = nameProduct;
     }
 
-    updateProductInformation(nameProduct:string){
-        this.productsSer.updateProductInformation(4, nameProduct, this.textEdit);
-    }
-
-    createProduct(){
-        this.productsSer.createProduct(this.locationCategory[0]).subscribe({
-            next : () =>{
-                this.router.navigate(['/product/Nombre del nuevo producto']);
-            },error : error =>{
-                console.log(error);
-                console.log(this.locationCategory[0]);
-            }
-        });
+    updateProductInformation(idProduct:number){
+        this.productsSer.updateProductInformation(4, idProduct, this.textEdit);
     }
 
     addToCart(id:number, prize:number, amount:string){

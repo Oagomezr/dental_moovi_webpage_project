@@ -8,7 +8,7 @@
                 [src]="'data:image/'+image.contentType+';base64,'+image.imageBase64" alt="">
         </div>
         <input #fileInput type="file" style="display: none" (change)="onFileSelected($event)" />
-        <button (click)="openFileExplorer()" *ngIf="isAdmin"><i class="material-icons">add</i> Añadir imagen</button>
+        <button (click)="openFileExplorer()" *ngIf="isAdmin && !isNew"><i class="material-icons">add</i> Añadir imagen</button>
     </div>
     <div class="image">
         <div class="imageOptions" *ngIf="isAdmin">
@@ -20,7 +20,7 @@
         <img *ngIf="product?.images?.length != 0" [src]="'data:image/'+(product.images[indexImg].contentType || null)+';base64,'+product.images[indexImg].imageBase64" alt="">
     </div>
     <div class="characteristics">
-        <app-visibility-icon *ngIf="isAdmin" [hide]="product.hidden != null" (changeVisibility)="openDialog($event,2)"></app-visibility-icon>
+        <app-visibility-icon *ngIf="isAdmin && !isNew" [hide]="product.hidden != null" (changeVisibility)="openDialog($event,2)"></app-visibility-icon>
         <button *ngIf="isAdmin && editArray[4]" (click)="editProductInformation(4)" class="category-button">
             <i class="material-icons">category</i>
         </button>
@@ -35,7 +35,7 @@
             <button *ngIf="isAdmin && !editArray[0]" (click)="updateProductInformation(0)" class="editOptions" style="background: green;">
                 <i class="material-icons">done</i>
             </button>
-            <button *ngIf="isAdmin && !editArray[0]" (click)="cancelProductInformation()" class="editOptions" style="background: red;">
+            <button *ngIf="isAdmin && !editArray[0] && !isNew" (click)="cancelProductInformation()" class="editOptions" style="background: red;">
                 <i class="material-icons">cancel</i>
             </button>
         </div>
@@ -49,7 +49,7 @@
             <button *ngIf="isAdmin && !editArray[1]" (click)="updateProductInformation(1)" class="editOptions" style="background: green;">
                 <i class="material-icons">done</i>
             </button>
-            <button *ngIf="isAdmin && !editArray[1]" (click)="cancelProductInformation()" class="editOptions" style="background: red;">
+            <button *ngIf="isAdmin && !editArray[1] && !isNew" (click)="cancelProductInformation()" class="editOptions" style="background: red;">
                 <i class="material-icons">cancel</i>
             </button>
         </div>
@@ -63,7 +63,7 @@
             <button *ngIf="isAdmin && !editArray[2]" (click)="updateProductInformation(2)" class="editOptions" style="background: green;">
                 <i class="material-icons">done</i>
             </button>
-            <button *ngIf="isAdmin && !editArray[2]" (click)="cancelProductInformation()" class="editOptions" style="background: red;">
+            <button *ngIf="isAdmin && !editArray[2] && !isNew" (click)="cancelProductInformation()" class="editOptions" style="background: red;">
                 <i class="material-icons">cancel</i>
             </button>
         </div>
@@ -78,32 +78,38 @@
             <button *ngIf="isAdmin && !editArray[3]" (click)="updateProductInformation(3)" class="editOptions" style="background: green;">
                 <i class="material-icons">done</i>
             </button>
-            <button *ngIf="isAdmin && !editArray[3]" (click)="cancelProductInformation()" class="editOptions" style="background: red;">
+            <button *ngIf="isAdmin && !editArray[3] && !isNew" (click)="cancelProductInformation()" class="editOptions" style="background: red;">
                 <i class="material-icons">cancel</i>
             </button>
         </div>
 
-        <div *ngIf="isAdmin && !editArray[4]" class="product-category">
+        <div *ngIf="isAdmin && (!editArray[4] || isNew)" class="product-category">
             <app-autocomplete-field
             [label]="'Categoria'"
             [options]="categories"
             (sendSearch)="searchCategories($event)"
-            (sendOption)="setDepartament($event)"
+            (sendOption)="setCategory($event)"
             [fieldText]="product.category!"
             ></app-autocomplete-field>
             
-            <button *ngIf="isAdmin && !editArray[4]" (click)="updateProductInformation(5)" class="editOptions" style="background: green;">
+            <button *ngIf="isAdmin && (!editArray[4])" (click)="updateProductInformation(5)" class="editOptions" style="background: green;">
                 <i class="material-icons">done</i>
             </button>
-            <button *ngIf="isAdmin && !editArray[4]" (click)="cancelProductInformation()" class="editOptions" style="background: red;">
+            <button *ngIf="isAdmin && (!editArray[4])" (click)="cancelProductInformation()" class="editOptions" style="background: red;">
                 <i class="material-icons">cancel</i>
             </button>
         </div>
 
-        <div class="product-add-cart">
+        <div class="product-add-cart" *ngIf="!isNew">
             <input type="number" min="1" [max]="product.stock" step="1" value="1" #amount>
             <button (click)="addToCart(product.id, product.unitPrice, amount.value)">
                 <i class="material-icons">add_shopping_cart</i> Añadir al carrito
+            </button>
+        </div>
+
+        <div class="save-product" *ngIf="isNew">
+            <button (click)="createProduct()" [disabled]="product.idCategory == 0">
+                <i class="material-icons">add</i>Guardar producto
             </button>
         </div>
 

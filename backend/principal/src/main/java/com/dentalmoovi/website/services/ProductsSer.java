@@ -115,13 +115,13 @@ public class ProductsSer {
     }
 
     @Cacheable(cacheNames = "getProduct")
-    public ProductsDTO getProduct(String name, boolean admin){
+    public ProductsDTO getProduct(Long id, boolean admin){
 
         class GetProduct{
             ProductsDTO getProduct(){
 
                 //Search product
-                Products product = productsRep.findByName(name)
+                Products product = productsRep.findById(id)
                     .orElseThrow(() -> new RuntimeException(productNotFound));
 
                 if (!admin && !product.openToPublic())
@@ -143,8 +143,8 @@ public class ProductsSer {
 
                 double unitPrice = product.showPrice() || admin ? product.unitPrice() : 0;
 
-                return new ProductsDTO(product.id() , name, unitPrice, product.description(), 
-                    product.shortDescription(), product.stock(), productImagesDTO, location, hidden, category.name());
+                return new ProductsDTO(product.id() , product.name(), unitPrice, product.description(), 
+                    product.shortDescription(), product.stock(), productImagesDTO, location, hidden, category.name(), null);
             }
 
             //It's a function with the aim of find the location products inside the categories
@@ -194,14 +194,14 @@ public class ProductsSer {
     @CacheEvict(
         cacheNames = {"getProducsByContaining", "getProduct", "productsByCategory"}, 
         allEntries = true)
-    public MessageDTO updateMainImage(long idImage, String productName){
-        Products product = productsRep.findByName(productName)
+    public MessageDTO updateMainImage(long idImage, Long idProduct){
+        Products product = productsRep.findById(idProduct)
             .orElseThrow(() -> new RuntimeException(productNotFound));
         productsRep.save(new Products(product.id(), product.name(), product.description(), product.shortDescription(), product.unitPrice(), product.stock(), product.openToPublic(), product.showPrice(), idImage, product.idCategory()));
 
         Users user = userSer.getUserAuthenticated();
 
-        ActivityLogs log = new ActivityLogs(null, "El usuario actualizo la foto principal del producto "+productName+" "+product.id(), LocalDateTime.now(), user.id());
+        ActivityLogs log = new ActivityLogs(null, "El usuario actualizo la foto principal del producto "+product.name()+" "+product.id(), LocalDateTime.now(), user.id());
         activityLogsRep.save(log);
 
         return new MessageDTO("Main product image updated");
@@ -210,12 +210,12 @@ public class ProductsSer {
     @CacheEvict(
         cacheNames = {"getProducsByContaining", "getProduct", "productsByCategory"}, 
         allEntries = true)
-    public MessageDTO uploadImage(MultipartFile file, String nameProduct) throws IOException{
+    public MessageDTO uploadImage(MultipartFile file, Long idProduct) throws IOException{
         class UploadImage{
             MessageDTO uploadImage() throws IOException{
         
                 // Find product
-                Products product = productsRep.findByName(nameProduct)
+                Products product = productsRep.findById(idProduct)
                         .orElseThrow(() -> new RuntimeException(productNotFound));
                 
                 // Read original image
@@ -375,9 +375,9 @@ public class ProductsSer {
     @CacheEvict(
         cacheNames = {"getProducsByContaining", "getProduct", "productsByCategory"}, 
         allEntries = true)
-    public MessageDTO updateProductInfo(int option, String nameProduct, String newInfo){
+    public MessageDTO updateProductInfo(int option, Long nameProduct, String newInfo){
         // Find product
-        Products product = productsRep.findByName(nameProduct)
+        Products product = productsRep.findById(nameProduct)
             .orElseThrow(() -> new RuntimeException(productNotFound));
 
         Users user = userSer.getUserAuthenticated();
@@ -454,25 +454,13 @@ public class ProductsSer {
     @CacheEvict(
         cacheNames = {"getProducsByContaining", "getProduct", "productsByCategory"}, 
         allEntries = true)
-    public Boolean createProduct(String categoryName){
+    public MessageDTO createProduct(ProductsDTO newProduct){
 
-        Categories category = categoriesRep.findByName(categoryName)
-            .orElseThrow(() -> new RuntimeException(productNotFound));
-
-        if (Boolean.TRUE.equals(productsRep.existsByName(nameProduct))) {
-            Products product = productsRep.findByName(nameProduct)
-                .orElseThrow(() -> new RuntimeException(productNotFound));
-            productsRep.save(new Products(
-                    product.id(), product.name(), product.description(), product.shortDescription(), product.unitPrice(), 
-                    product.stock(), product.openToPublic(), product.showPrice(), product.idMainImage(), category.id()));
-            return false;
-        }
-
-        productsRep.save(new Products(
-            null, nameProduct, "Descripción del nuevo producto", "descripción corta del nuevo producto", 0, 
-            0, false, true, null, category.id()));
+        Products product = productsRep.save(new Products(
+            null, newProduct.nameProduct(), newProduct.description(), newProduct.shortDescription(), newProduct.unitPrice(), 
+            newProduct.stock(), false, true, null, newProduct.idCategory()));
             
-        return true;
+        return new MessageDTO(String.valueOf(product.id()));
     }
 
     public CartResponse getShoppingCartProducts(CartRequest req, boolean admin, boolean pdf){
@@ -543,7 +531,7 @@ public class ProductsSer {
                     double unitPrice = product.showPrice() || all ? product.unitPrice() : 0;
 
                     ProductsDTO productDTO = new ProductsDTO(product.id() , product.name(), unitPrice, 
-                        product.description(), product.shortDescription(), product.stock(), productImagesDTO, null, hidden, null);
+                        product.description(), product.shortDescription(), product.stock(), productImagesDTO, null, hidden, null, null);
                     productsDTOList.add(productDTO);
                 }
             } catch (Exception e) {
@@ -593,6 +581,4 @@ public class ProductsSer {
 
         return new ImagesDTO(idMainImage , imgName, contentType, base64Image);
     }
-
-    private String nameProduct = "Nombre del nuevo producto";
 }
