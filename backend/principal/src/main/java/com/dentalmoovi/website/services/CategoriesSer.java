@@ -1,6 +1,5 @@
 package com.dentalmoovi.website.services;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +7,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import com.dentalmoovi.website.Utils;
 import com.dentalmoovi.website.models.dtos.CategoriesDTO;
 import com.dentalmoovi.website.models.dtos.MessageDTO;
 import com.dentalmoovi.website.models.entities.ActivityLogs;
@@ -49,7 +49,7 @@ public class CategoriesSer {
 
         Users user = userSer.getUserAuthenticated();
 
-        ActivityLogs log = new ActivityLogs(null, "El usuario actualizo el nombre de la categoria "+categoryName+" a "+newName+" "+category.id(), LocalDateTime.now(), user.id());
+        ActivityLogs log = new ActivityLogs(null, "El usuario actualizo el nombre de la categoria "+categoryName+" a "+newName+" "+category.id(), Utils.getNow(), user.id());
         activityLogsRep.save(log);
 
         return new MessageDTO("Category updated");
@@ -70,8 +70,7 @@ public class CategoriesSer {
             Categories newParentCategory = getCategoryByName(newPosition);
 
             String currentParentCategory = category.idParentCategory() != null ? 
-                categoriesRep.findById(category.idParentCategory())
-                    .orElseThrow(() -> new RuntimeException("Category not found")).name()
+                Utils.getCategoryById(category.idParentCategory(), categoriesRep).name()
                 : "Categoria principal";
             
             Categories categoryUpdated = new Categories(category.id(), category.name(), newParentCategory.id());
@@ -79,7 +78,7 @@ public class CategoriesSer {
             logMessage = "El usuario cambio la posicion de la categoria "+categoryName+" de "+currentParentCategory+" a "+newPosition+" "+category.id();
         }
 
-        ActivityLogs log = new ActivityLogs(null, logMessage, LocalDateTime.now(), user.id());
+        ActivityLogs log = new ActivityLogs(null, logMessage, Utils.getNow(), user.id());
         activityLogsRep.save(log);
 
         return new MessageDTO("Category updated");
@@ -99,7 +98,7 @@ public class CategoriesSer {
             logMessage = "El usuario creo la categoria "+newCategoryName+" como subcategoria de "+parentCategory.name();
         }
 
-        ActivityLogs log = new ActivityLogs(null, logMessage, LocalDateTime.now(), user.id());
+        ActivityLogs log = new ActivityLogs(null, logMessage, Utils.getNow(), user.id());
         activityLogsRep.save(log);
 
         return new MessageDTO("Category created");
@@ -119,7 +118,7 @@ public class CategoriesSer {
             logMessage = "El usuario elimino la subCategoria "+categoryName+" de "+parentCategoryName;
         }
 
-        ActivityLogs log = new ActivityLogs(null, logMessage, LocalDateTime.now(), user.id());
+        ActivityLogs log = new ActivityLogs(null, logMessage, Utils.getNow(), user.id());
         activityLogsRep.save(log);
 
         categoriesRep.delete(category);

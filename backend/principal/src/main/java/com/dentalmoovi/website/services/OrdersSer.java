@@ -1,7 +1,6 @@
 package com.dentalmoovi.website.services;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -111,7 +110,7 @@ public class OrdersSer {
             +customerUser.firstName()+" "+customerUser.lastName()+
             " de "+theOrder.status().name()+" a "+newStatus.name();
 
-        ActivityLogs log = new ActivityLogs(null, logMessage, LocalDateTime.now(), userAdmin.id());
+        ActivityLogs log = new ActivityLogs(null, logMessage, Utils.getNow(), userAdmin.id());
         activityLogsRep.save(log);
 
         return new MessageDTO("Status Order updated");
@@ -129,7 +128,7 @@ public class OrdersSer {
 
         user = admin ? userSer.getUser(req.idUser()) : userSer.getUserAuthenticated();
         
-        order = Utils.setOrder(StatusOrderList.PENDING, LocalDateTime.now(), user.id(), idAddress, req, ordersRep);
+        order = Utils.setOrder(StatusOrderList.PENDING, Utils.getNow(), user.id(), idAddress, req, ordersRep);
 
         Addresses address = Utils.getAddress(idAddress, addressesRep);
 

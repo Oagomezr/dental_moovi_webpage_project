@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { Images } from 'src/app/models/images/Images';
 import { ImagesService } from 'src/app/services/images/images.service';
-import { ProductsService } from 'src/app/services/products/products.service';
 
 @Component({
   selector: 'app-carousel',

@@ -1,6 +1,5 @@
 package com.dentalmoovi.website.services;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -113,7 +112,7 @@ public class UserSer {
                 
                 newUser = userRep.save(newUser);
 
-                ActivityLogs log = new ActivityLogs(null, "El usuario se registro en la plataforma", LocalDateTime.now(), newUser.id());
+                ActivityLogs log = new ActivityLogs(null, "El usuario se registro en la plataforma", Utils.getNow(), newUser.id());
                 activityLogsRep.save(log);
 
                 return "User Created";
@@ -211,7 +210,7 @@ public class UserSer {
                 
                 Users adminUser = getUserAuthenticated();
 
-                ActivityLogs log = new ActivityLogs(null, "El administrador agrego un nuevo usuario: "+userDTO.email(), LocalDateTime.now(), adminUser.id());
+                ActivityLogs log = new ActivityLogs(null, "El administrador agrego un nuevo usuario: "+userDTO.email(), Utils.getNow(), adminUser.id());
                 activityLogsRep.save(log);
 
                 return "User Created";
@@ -238,7 +237,7 @@ public class UserSer {
         String logMessage = compareUpdateUserData(user,userUpdated);
 
         if (!logMessage.equals("El usuario actualizo sus datos personales: ")) {
-            ActivityLogs log = new ActivityLogs(null, logMessage, LocalDateTime.now(), user.id());
+            ActivityLogs log = new ActivityLogs(null, logMessage, Utils.getNow(), user.id());
             activityLogsRep.save(log);
             userRep.save(userUpdated);
         }
@@ -314,7 +313,7 @@ public class UserSer {
 
         String logMessage = "Agrego una nueva direccion: "+address.address()+" "+municipaly.name()+" "+departament.name();
 
-        ActivityLogs log = new ActivityLogs(null, logMessage, LocalDateTime.now(), user.id());
+        ActivityLogs log = new ActivityLogs(null, logMessage, Utils.getNow(), user.id());
         activityLogsRep.save(log);
         
         user.addAddress(address);
@@ -364,7 +363,7 @@ public class UserSer {
         String logMessage = compareUpdateAddressData(currentAddress, newAddress);
 
         if (!logMessage.equals("El usuario actualizo la direccion: ")) {
-            ActivityLogs log = new ActivityLogs(null, logMessage, LocalDateTime.now(), user.id());
+            ActivityLogs log = new ActivityLogs(null, logMessage, Utils.getNow(), user.id());
             activityLogsRep.save(log);
             addressesRep.save( newAddress );
         }
@@ -389,7 +388,7 @@ public class UserSer {
         //numberUpdates
         Utils.addTriesCache("deleteAddress",user.id().toString(),2, cacheSer);
 
-        ActivityLogs log = new ActivityLogs(null, logMessage, LocalDateTime.now(), user.id());
+        ActivityLogs log = new ActivityLogs(null, logMessage, Utils.getNow(), user.id());
         activityLogsRep.save(log);
 
         return deleteAddress(user, id);
@@ -408,7 +407,7 @@ public class UserSer {
         boolean valid = pwe.matches(dto.oldP(), user.password());
 
         if (valid){
-            ActivityLogs log = new ActivityLogs(null, "El usuario cambio la contraseña", LocalDateTime.now(), user.id());
+            ActivityLogs log = new ActivityLogs(null, "El usuario cambio la contraseña", Utils.getNow(), user.id());
             activityLogsRep.save(log);
             return updatePw(user, dto.newP());
         }
@@ -433,7 +432,7 @@ public class UserSer {
 
         restTemplate.postForEntity(emailServiceUrl+"/sendEmail", emailData, Void.class);
 
-            ActivityLogs log = new ActivityLogs(null, "El usuario solicito recordatorio de contraseña", LocalDateTime.now(), user.id());
+            ActivityLogs log = new ActivityLogs(null, "El usuario solicito recordatorio de contraseña", Utils.getNow(), user.id());
             activityLogsRep.save(log);
 
             return updatePw(user, newPw);

@@ -2,6 +2,7 @@ package com.dentalmoovi.website;
 
 import com.dentalmoovi.website.models.cart.CartRequest;
 import com.dentalmoovi.website.models.entities.Addresses;
+import com.dentalmoovi.website.models.entities.Categories;
 import com.dentalmoovi.website.models.entities.Enterprises;
 import com.dentalmoovi.website.models.entities.Orders;
 import com.dentalmoovi.website.models.entities.Users;
@@ -12,6 +13,7 @@ import com.dentalmoovi.website.models.exceptions.ALotTriesException;
 import com.dentalmoovi.website.models.exceptions.ImageLoadingException;
 import com.dentalmoovi.website.models.exceptions.JsonConversionException;
 import com.dentalmoovi.website.repositories.AddressesRep;
+import com.dentalmoovi.website.repositories.CategoriesRep;
 import com.dentalmoovi.website.repositories.EnterprisesRep;
 import com.dentalmoovi.website.repositories.OrdersRep;
 import com.dentalmoovi.website.repositories.UserRep;
@@ -31,6 +33,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Random;
+
+import java.time.ZonedDateTime;
+import java.time.ZoneId;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -168,5 +173,15 @@ public class Utils {
     public static Enterprises getEnterprise(Long id, EnterprisesRep enterprisesRep){
         return enterprisesRep.findById(id)
             .orElseThrow(() -> new RuntimeException("Enterprise not found"));
+    }
+
+    public static LocalDateTime getNow(){
+        ZonedDateTime nowInColombia = ZonedDateTime.now(ZoneId.of("America/Bogota"));
+        return nowInColombia.toLocalDateTime();
+    } 
+
+    public static Categories getCategoryById(Long id, CategoriesRep categoriesRep){
+        return  categoriesRep.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Category not found"));
     }
 }

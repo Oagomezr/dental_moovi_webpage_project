@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 import javax.imageio.ImageIO;
 
@@ -19,6 +18,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.dentalmoovi.website.Utils;
 import com.dentalmoovi.website.models.cart.CartDtoRequest;
 import com.dentalmoovi.website.models.cart.CartDtoRespose;
 import com.dentalmoovi.website.models.cart.CartRequest;
@@ -201,7 +201,7 @@ public class ProductsSer {
 
         Users user = userSer.getUserAuthenticated();
 
-        ActivityLogs log = new ActivityLogs(null, "El usuario actualizo la foto principal del producto "+product.name()+" "+product.id(), LocalDateTime.now(), user.id());
+        ActivityLogs log = new ActivityLogs(null, "El usuario actualizo la foto principal del producto "+product.name()+" "+product.id(), Utils.getNow(), user.id());
         activityLogsRep.save(log);
 
         return new MessageDTO("Main product image updated");
@@ -229,7 +229,7 @@ public class ProductsSer {
 
                 Users user = userSer.getUserAuthenticated();
 
-                ActivityLogs log = new ActivityLogs(null, "El usuario agrego una nueva foto al producto "+product.name()+" "+product.id(), LocalDateTime.now(), user.id());
+                ActivityLogs log = new ActivityLogs(null, "El usuario agrego una nueva foto al producto "+product.name()+" "+product.id(), Utils.getNow(), user.id());
                 activityLogsRep.save(log);
                 
                 // Create and save the new image
@@ -333,7 +333,7 @@ public class ProductsSer {
                     product.stock(), product.openToPublic(), product.showPrice(), null, product.idCategory()));
             imagesRep.deleteById(idImage);
 
-            ActivityLogs log = new ActivityLogs(null, "El usuario elimino la foto principal del producto "+product.name()+" "+product.id(), LocalDateTime.now(), user.id());
+            ActivityLogs log = new ActivityLogs(null, "El usuario elimino la foto principal del producto "+product.name()+" "+product.id(), Utils.getNow(), user.id());
             activityLogsRep.save(log);
 
         }else{
@@ -345,7 +345,7 @@ public class ProductsSer {
             Products product = productsRep.findById(img.idProduct())
                 .orElseThrow(() -> new RuntimeException(productNotFound));
 
-            ActivityLogs log = new ActivityLogs(null, "El usuario elimino una foto del producto "+product.name()+" "+product.id(), LocalDateTime.now(), user.id());
+            ActivityLogs log = new ActivityLogs(null, "El usuario elimino una foto del producto "+product.name()+" "+product.id(), Utils.getNow(), user.id());
             activityLogsRep.save(log);
 
             imagesRep.deleteById(idImage);
@@ -363,7 +363,7 @@ public class ProductsSer {
             .orElseThrow(() -> new RuntimeException(productNotFound));
 
         Users user = userSer.getUserAuthenticated();
-        ActivityLogs log = new ActivityLogs(null, "El usuario cambio la visibilidad del producto: "+product.name()+" "+product.id()+" "+visibility, LocalDateTime.now(), user.id());
+        ActivityLogs log = new ActivityLogs(null, "El usuario cambio la visibilidad del producto: "+product.name()+" "+product.id()+" "+visibility, Utils.getNow(), user.id());
         activityLogsRep.save(log);
 
         productsRep.save(new Products(
@@ -445,7 +445,7 @@ public class ProductsSer {
                 throw new IncorrectException("Invalid option");
         }
 
-        ActivityLogs log = new ActivityLogs(null, logMessage, LocalDateTime.now(), user.id());
+        ActivityLogs log = new ActivityLogs(null, logMessage, Utils.getNow(), user.id());
         activityLogsRep.save(log);
 
         return new MessageDTO("Info updated");

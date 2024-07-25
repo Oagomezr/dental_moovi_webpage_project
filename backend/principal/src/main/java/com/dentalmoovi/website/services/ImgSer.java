@@ -2,7 +2,6 @@ package com.dentalmoovi.website.services;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 import javax.imageio.ImageIO;
 
@@ -15,6 +14,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.dentalmoovi.website.Utils;
 import com.dentalmoovi.website.models.dtos.ImagesDTO;
 import com.dentalmoovi.website.models.dtos.MessageDTO;
 import com.dentalmoovi.website.models.entities.ActivityLogs;
@@ -58,7 +58,7 @@ public class ImgSer {
 
                 Users user = userSer.getUserAuthenticated();
 
-                ActivityLogs log = new ActivityLogs(null, "El usuario agrego una nueva foto al carrucel", LocalDateTime.now(), user.id());
+                ActivityLogs log = new ActivityLogs(null, "El usuario agrego una nueva foto al carrucel", Utils.getNow(), user.id());
                 activityLogsRep.save(log);
                 
                 // Create and save the new image
@@ -103,7 +103,7 @@ public class ImgSer {
         Images img = imgRep.findById(idImage)
             .orElseThrow(() -> new ImageLoadingException("Image not found"));
 
-        ActivityLogs log = new ActivityLogs(null, "El usuario elimino una foto del carousel: "+img.name(), LocalDateTime.now(), user.id());
+        ActivityLogs log = new ActivityLogs(null, "El usuario elimino una foto del carousel: "+img.name(), Utils.getNow(), user.id());
         activityLogsRep.save(log);
 
         imgRep.deleteById(idImage);
