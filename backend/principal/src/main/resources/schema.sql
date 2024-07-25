@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS images (
     name VARCHAR(70) NOT NULL,
     content_type VARCHAR(10) NOT NULL,
     data LONGBLOB NOT NULL,
-    id_product BIGINT NOT NULL
+    id_product BIGINT DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS products (

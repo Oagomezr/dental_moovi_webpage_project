@@ -1,0 +1,162 @@
+.carousel-container{
+    position: relative;
+    margin: auto;
+    text-align: center;
+    height: 80vh;
+    width: auto;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    //box-shadow: 0 6px 12px #dce1e1;
+
+    .img-container{
+        height: 100%;
+        position: relative;
+        display: none;
+
+        img{
+            border-radius: 15px;
+            height: 100%;
+        }
+
+        .title{
+            position: absolute;
+            top: 0;
+            padding-top: 10px;
+            z-index: 2;
+            font-size: large;
+            text-align: center;
+            font-weight: bolder;
+            color: white;
+            text-shadow: 
+                -1px -1px 0 #000,  
+                1px -1px 0 #000,
+                -1px 1px 0 #000,
+                1px 1px 0 #000; 
+        }
+
+        .delete{
+            z-index: 3;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            cursor: pointer;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            &:hover{
+                background-color: white;
+                color: red;
+                border: red 2px solid;
+            }
+        }
+    }
+
+    .image-activate{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: auto;
+        height: 100%;
+        position: relative;
+    }
+
+    
+
+    .carousel-dot-container{
+        position: absolute;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        padding: 0;
+        margin-bottom: 1rem;
+
+        .dot{
+            cursor: pointer;
+            height: 13px;
+            width: 13px;
+            margin: 0 5px;
+            background-color: #fff;
+            border-radius: 50%;
+            display: inline-block;
+            transition: opacity 0.6s ease;
+            opacity: 0.5;
+        }
+
+        .dot-add{
+            border-radius: 50%;
+            height: 20px;
+            width: 20px;
+            font-size: smaller;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background-color: green;
+            border: none;
+            color: white;
+        }
+
+        .activate, .dot:hover{
+            opacity: 1;
+        }
+    }
+
+    .fade{
+        animation-name: fade;
+        animation-duration: 1.5s;
+    }
+
+    @keyframes fade {
+        from{
+            opacity: 0.4;
+        } to{
+            opacity: 1;
+        }
+    }
+
+    .btn-carousel{
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 15%;
+        padding: 0;
+        color: #000;
+        text-align: center;
+        background-color: 0 0;
+        border: 0;
+        cursor: pointer;
+        z-index: 2;
+    }
+
+    .btn-prev{
+        left: 0;
+    }
+
+    .btn-next{
+        right: 0;
+    }
+
+    .icon-carousel{
+        opacity: 0.5;
+        transition: all 0.15s ease;
+        &:hover{
+            opacity: 0.9;
+        }
+        &:active{
+            opacity: 0.5;
+        }
+    }
+
+    .icon{
+        font-size: 35px;
+    }
+}
+

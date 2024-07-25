@@ -11,4 +11,7 @@ import com.dentalmoovi.website.models.entities.Images;
 public interface ImgRep extends CrudRepository<Images, Long>{
     @Query("SELECT * FROM images WHERE id_product = :idProduct")
     List<Images> findByIdProduct(@Param("idProduct") Long idProduct);
+
+    @Query("SELECT * FROM images WHERE id_product IS NULL ORDER BY name")
+    List<Images> findCarouselImgs();
 }

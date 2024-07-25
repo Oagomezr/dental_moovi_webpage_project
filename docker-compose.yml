@@ -17,15 +17,39 @@ services:
       timeout: 10s
       retries: 5
 
-  dentalback:
-    build: ./BackEnd/website
+  dentalorders:
+    build: ./BackEnd/order_service
     environment:
-      SPRING_PORT_SERVER: ${SPRING_PORT_SERVER}
+      SPRING_PORT_ORDER: ${SPRING_PORT_ORDER}
+      SPRING_ADDRESS_SERVER: ${SPRING_ADDRESS_SERVER}
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PW: ${DB_PW}
+      JDBC_DRIVER: ${JDBC_DRIVER}
+    restart: always
+    networks:
+      - internal
+
+  dentalnotifications:
+    build: ./BackEnd/notifications_service
+    environment:
+      SPRING_PORT_NOTIFICATIONS: ${SPRING_PORT_NOTIFICATIONS}
       SPRING_ADDRESS_SERVER: ${SPRING_ADDRESS_SERVER}
       MAIL_HOST: ${MAIL_HOST}
       MAIL_PORT: ${MAIL_PORT}
       EMAIL: ${EMAIL}
       MAIL_PW: ${MAIL_PW}
+    restart: always
+    networks:
+      - internal
+
+  dentalprincipal:
+    build: ./BackEnd/principal
+    environment:
+      SPRING_PORT_SERVER: ${SPRING_PORT_SERVER}
+      SPRING_ADDRESS_SERVER: ${SPRING_ADDRESS_SERVER}
+      EMAIL_SERVICE: ${EMAIL_SERVICE}
+      ORDER_SERVICE: ${ORDER_SERVICE}
       MAIL_PW_2: ${MAIL_PW_2}
       JWT_SECRET: ${JWT_SECRET}
       JWT_COOKIE: ${JWT_COOKIE}
@@ -45,11 +69,11 @@ services:
       - internal
 
   dentalfront:
-    build: ./FrontEnd/dental-moovi
+    build: ./FrontEnd
     ports:
       - ${FRONT_PORT}
     depends_on:
-      - dentalback
+      - dentalprincipal
     networks:
       - internal
       - external

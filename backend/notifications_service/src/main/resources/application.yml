@@ -16,5 +16,5 @@ spring:
                         enable: true
                         
 server:
-    port: ${SPRING_PORT_SERVER}
+    port: ${SPRING_PORT_NOTIFICATIONS}
     address: ${SPRING_ADDRESS_SERVER}

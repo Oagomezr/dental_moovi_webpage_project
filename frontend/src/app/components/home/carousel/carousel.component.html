@@ -1,0 +1,42 @@
+<div class="carousel-container">
+
+    <div *ngFor="let img of imageBase64;let i=index" 
+        class="img-container"
+        [ngClass]="{ 'image-activate': selectedIndex === i }">
+        <div *ngIf="!autoSlide" class="title">{{img.name}}</div>
+        <button class="delete" *ngIf="!autoSlide" (click)="deleteImage(img.id)">
+            <i class="material-icons">delete</i>
+        </button>
+        <img [src]="'data:image/'+img.contentType+';base64,'+img.imageBase64" 
+            [alt]="" 
+            
+            class="fade">
+    </div>
+
+    <div class="img-container image-activate">
+        <div *ngIf="!autoSlide && imageBase64.length == 0" class="title">Añada una imagen</div>
+        <img *ngIf="imageBase64.length == 0" src="assets/images/add-photo.jpg" alt="" class="fade">
+    </div>
+    
+    <div *ngIf="indicators" class="carousel-dot-container">
+        <span *ngFor="let dot of imageBase64; let i=index" 
+            class="dot"
+            [ngClass]="{'activate': selectedIndex === i}"
+            (click)="selectImg(i)"
+            (keydown)="handleKeyDown($event)">
+        </span>
+
+        <input #fileInput type="file" style="display: none" (change)="onFileSelected($event)" />
+        <button class="dot-add" *ngIf="!autoSlide" (click)="openFileExplorer()">
+            <i class="material-icons">add</i>
+        </button>
+    </div>
+
+    <div *ngIf="controls" (click)="prev()" class="btn-carousel btn-prev" (keydown)="handleKeyDown($event)">
+        <i class="fas fa-arrow-circle-left icon-carousel icon"></i>
+    </div>
+
+    <div *ngIf="controls" (click)="next()" class="btn-carousel btn-next" (keydown)="handleKeyDown($event)">
+        <i class="fas fa-arrow-circle-right icon-carousel icon"></i>
+    </div>
+</div>

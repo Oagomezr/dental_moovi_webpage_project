@@ -23,7 +23,7 @@ spring:
             static-locations: classpath:/static/
 
 server:
-    port: ${SPRING_PORT_SERVER}
+    port: ${SPRING_PORT_ORDER}
     address: ${SPRING_ADDRESS_SERVER}
     servlet:
         session:

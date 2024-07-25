@@ -1,21 +1,30 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ImageResponse } from 'src/app/models/images/imgResponse';
+import { message } from 'src/app/models/message';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ImagesService {
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
-  decodeAndDisplayImage(base64Text: string, contentType: string) {
-    let binaryString = window.atob(base64Text);
-    let bytes = new Uint8Array(binaryString.length);
-    
-    for (let i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
-  
-    let blob = new Blob([bytes], { type: contentType });
-    return URL.createObjectURL(blob);
+  getCarousel(): Observable<ImageResponse> {
+    return this.http.get<ImageResponse>(`${environment.url_back}/public/carousel`);
   }
+
+  uploadImage(file: File) {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+
+    return this.http.post(`${environment.url_back}/admin/uploadImage`, formData, {withCredentials:true});
+  }
+
+  deleteImage(parameter:number): Observable<message>{
+    return this.http.delete<message>(`${environment.url_back}/admin/deleteImage/${parameter}`, {withCredentials:true});
+  }
+
 }

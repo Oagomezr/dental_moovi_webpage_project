@@ -1,6 +1,6 @@
 export interface Images {
     id:number;
-    nameImage:string;
+    name:string;
     contentType:string;
     imageBase64:string;
 }
