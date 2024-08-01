@@ -18,7 +18,7 @@ import { OrderPanelComponent } from './order-panel/order-panel.component';
 export class ManageOrdersComponent {
 
   ngOnInit(){
-    this.getOrders('PENDING', true);
+    this.getOrders();
   }
 
   pdfSrc: Blob | null = null;
@@ -46,8 +46,8 @@ export class ManageOrdersComponent {
     });
   }
 
-  getOrders(status:string, orderBy: boolean){
-    this.orderService.getPdfsList(status, orderBy).subscribe({
+  getOrders(){
+    this.orderService.getPdfsList().subscribe({
       next: r => {
         this.pending = r.pending;
         this.complete = r.complete;

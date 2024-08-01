@@ -23,4 +23,11 @@ public interface ProductsRep extends CrudRepository<Products,Long>{
     int countProductsByContaining(@Param("name") String name);
 
     boolean existsByName(@Param("name") String name);
+
+    @Query("SELECT EXISTS(SELECT 1 FROM orders_products WHERE id_product = :productId)")
+    boolean existsRelacionsProduct(@Param("productId") Long id);
+
+    @Query("DELETE FROM orders_products WHERE id_product = :productId")
+    void deleteRelacionsProduct(@Param("productId") Long id);
+
 }

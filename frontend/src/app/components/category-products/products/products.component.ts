@@ -122,4 +122,16 @@ export class ProductsComponent {
         console.log(this.callerCart);
         window.location.reload();
     }
+
+    deleteProduct(id:number){
+        console.log(id);
+        this.productsSer.deleteProduct(id).subscribe({
+            next: r=>{
+                console.log(r);
+                window.location.reload();
+            },error: e=>{
+                console.log(e.error.message);
+            }
+        });
+    }
 }

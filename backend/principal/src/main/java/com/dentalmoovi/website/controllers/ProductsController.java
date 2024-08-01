@@ -98,6 +98,17 @@ public class ProductsController {
         try{
             return ResponseEntity.ok(productsSer.deleteImage(parameter));
         } catch (Exception e) {
+            Utils.showMessage("The imagen could not delete because: "+e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/api/admin/products/deleteProduct/{id}")
+    public ResponseEntity<MessageDTO> deleteProduct(@PathVariable("id") Long id) {
+        try{
+            return ResponseEntity.ok(productsSer.deleteProduct(id));
+        } catch (Exception e) {
+            Utils.showMessage("The imagen could not delete because: "+e.getMessage());
             return ResponseEntity.notFound().build();
         }
     }

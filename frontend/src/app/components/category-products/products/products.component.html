@@ -42,6 +42,9 @@
                 <input type="number" min="1" [max]="product.stock" step="1" value="1" #amount>
                 <button class="material-icons" (click)="addToCart(product.id, product.unitPrice, amount.value)">add_shopping_cart</button>
             </div>
+            <button *ngIf="isAdmin" class="delete-product" (click)="deleteProduct(product.id)">
+                <i class="material-icons">delete</i>
+            </button>
         </div>
     </div>
     <div class="pagination" *ngIf="totalPages > 1">

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -68,12 +69,10 @@ public class UserSer {
     @Value("${server.emailService}")
     private String emailServiceUrl;
 
+    @Async("taskExecutor")
     public void sendEmailNotification(String email, String subject, String body) {
-
         EmailData emailData = new EmailData(email, subject, body);
-
         restTemplate.postForEntity(emailServiceUrl+"/sendCode", emailData, Void.class);
-
     }
 
     public String createUser(UserDTO userDTO) throws RuntimeException {
@@ -88,11 +87,6 @@ public class UserSer {
                 
                 validateCode(userDTO.email(), userDTO.code());
 
-                Long idUser = null;
-
-                if(Boolean.TRUE.equals(userRep.existsByEmailIgnoreCase(userDTO.email())))
-                    idUser = Utils.getUserByEmail(userDTO.email(), userRep).id();
-
                 //create default role
                 Roles defaultRole = rolesRep.findByRole(RolesList.USER_ROLE)
                     .orElseThrow(() -> new RuntimeException("Role not found"));
@@ -104,10 +98,7 @@ public class UserSer {
                 Long idEnterprise = getEnterprise(userDTO.enterprise());
 
                 //set and save user
-                Users newUser = 
-                    new Users(
-                        idUser, userDTO.firstName(), userDTO.lastName(), userDTO.email(), userDTO.celPhone(), 
-                        userDTO.birthdate(), userDTO.gender(), hashedPassword, idEnterprise, null, null);
+                Users newUser = createUser(userDTO, idEnterprise, hashedPassword);
                 newUser.addRole(defaultRole);
                 
                 newUser = userRep.save(newUser);
@@ -116,6 +107,18 @@ public class UserSer {
                 activityLogsRep.save(log);
 
                 return "User Created";
+            }
+
+            Users createUser(UserDTO userDTO, Long idEnterprise, String password) {
+                if(Boolean.TRUE.equals(userRep.existsByEmailIgnoreCase(userDTO.email()))){
+                    Users user = Utils.getUserByEmail(userDTO.email(), userRep);
+                    return new Users(
+                        user.id(), userDTO.firstName(), userDTO.lastName(), userDTO.email(), userDTO.celPhone(), 
+                        userDTO.birthdate(), userDTO.gender(), password, idEnterprise, null, user.addresses());
+                }
+                return new Users(
+                    null, userDTO.firstName(), userDTO.lastName(), userDTO.email(), userDTO.celPhone(), 
+                    userDTO.birthdate(), userDTO.gender(), password, idEnterprise, null, null);
             }
         }
 

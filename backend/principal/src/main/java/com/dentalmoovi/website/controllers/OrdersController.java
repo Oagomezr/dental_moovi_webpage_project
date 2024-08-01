@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
@@ -49,8 +50,8 @@ public class OrdersController {
         }
     }
 
-    @GetMapping("/api/admin/order/{status}/{orderBy}")
-    public ResponseEntity<OrdersResponse> getOrdersA(@PathVariable("status") StatusOrderList status, @PathVariable("orderBy") boolean orderBy){
+    @GetMapping("/api/admin/order")
+    public ResponseEntity<OrdersResponse> getOrdersA(){
         try{
             return ResponseEntity.ok(ordersSer.getAllOrders(true));
         }catch (Exception e) {
@@ -58,7 +59,7 @@ public class OrdersController {
         }
     }
 
-    @GetMapping("/api/user/order/{status}/{orderBy}")
+    @GetMapping("/api/user/order")
     public ResponseEntity<OrdersResponse> getOrdersU(@PathVariable("status") StatusOrderList status, @PathVariable("orderBy") boolean orderBy){
         try{
             return ResponseEntity.ok(ordersSer.getAllOrders(false));
@@ -89,6 +90,15 @@ public class OrdersController {
                 .contentLength(pdfBytes.length)
                 .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
                 .body(resource);
+    }
+
+    @PutMapping("/api/admin/order/{status}")
+    public ResponseEntity<MessageDTO> updateOrderStatus(@PathVariable("status") StatusOrderList status, @RequestBody long id) {
+        try{
+            return ResponseEntity.ok(ordersSer.updateStatus(id, status));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }

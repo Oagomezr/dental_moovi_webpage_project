@@ -114,6 +114,15 @@ public class ProductsSer {
         return innerClass.getProductsByCategory();
     }
 
+    @CacheEvict(
+        cacheNames = {"getProducsByContaining", "getProduct", "productsByCategory"}, 
+        allEntries = true)
+    public MessageDTO deleteProduct(Long id){
+        if(productsRep.existsRelacionsProduct(id)) productsRep.deleteRelacionsProduct(id);
+        productsRep.deleteById(id);
+        return new MessageDTO("Product deleted successfully");
+    }
+
     @Cacheable(cacheNames = "getProduct")
     public ProductsDTO getProduct(Long id, boolean admin){
 

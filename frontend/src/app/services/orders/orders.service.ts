@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { OrderResponse } from 'src/app/models/orders/ordersResponse';
+import { message } from 'src/app/models/message';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,11 @@ export class OrdersService {
     return this.http.get(`${environment.url_back}/${this.access}/order/${id}`, { responseType: 'blob', withCredentials:true });
   }
   
-  getPdfsList(status:string, orderBy:boolean):  Observable<OrderResponse>{
-    return this.http.get<OrderResponse>(`${environment.url_back}/${this.access}/order/${status}/${orderBy}`, { withCredentials:true });
+  getPdfsList():  Observable<OrderResponse>{
+    return this.http.get<OrderResponse>(`${environment.url_back}/${this.access}/order`, { withCredentials:true });
+  }
+
+  updateStatusOrder(idOrder: number, status: string): Observable<message>{
+    return this.http.put<message>(`${environment.url_back}/admin/order/${status}`, idOrder, {withCredentials:true});
   }
 }

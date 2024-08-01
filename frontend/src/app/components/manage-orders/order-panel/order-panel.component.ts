@@ -26,7 +26,7 @@ export class OrderPanelComponent {
   isAdmin: boolean = localStorage.getItem('isAdmin') != null;
 
   getPdf(id:number, name:string){
-    this.buttonSelected = id; // Cambia esto según sea necesario
+    this.buttonSelected = id;
     this.orderService.getPdf(id).subscribe({
       next: (data: Blob) => {
         this.pdfSrc=data;
@@ -40,9 +40,16 @@ export class OrderPanelComponent {
     });
   }
 
-  updateOrderStatus(isOtherButton:boolean, order:number){
+  updateOrderStatus(isOtherButton:boolean, order:number, status:string){
     if(isOtherButton){
-      
+      this.orderService.updateStatusOrder(order, status).subscribe({
+        next: r=>{
+          console.log(r.infoMessage);
+          window.location.reload();
+        },error: e=>{
+          console.log(e.error.message);
+        }
+      });
     }
   }
   

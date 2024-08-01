@@ -80,4 +80,8 @@ export class ProductsService {
     return this.http.post<CartResponse>(`${environment.url_back}/${this.access}/shoppingCart`, store, {withCredentials:this.isAdmin});
   }
 
+  deleteProduct(id:number): Observable<message>{
+    return this.http.delete<message>(`${environment.url_back}/admin/products/deleteProduct/${id}`, {withCredentials:true});
+  }
+
 }

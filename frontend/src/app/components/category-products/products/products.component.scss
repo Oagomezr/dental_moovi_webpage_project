@@ -48,14 +48,33 @@
                 opacity: 0.5;
             }
         }
+
+        
         
         .product{
+            position: relative;
             box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2),-2px -2px 4px rgba(0, 0, 0, 0.2); 
             display: flex;
             flex-direction: column;
             width: 210px;
             margin-right: 1%;
             margin-bottom: 1%;
+
+            .delete-product{
+                position: absolute;
+                z-index: 20;
+                right: 0;
+                background-color: red;
+                color: white;
+                border-radius: 10px;
+                border: none;
+                cursor: pointer;
+                &:hover{
+                    background-color: white;
+                    color: red;
+                    border: solid 2px red;
+                }
+            }
 
             &:hover{
                 background-color: rgba(0, 0, 0, 0.105);

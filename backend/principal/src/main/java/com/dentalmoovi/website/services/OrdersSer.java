@@ -1,11 +1,11 @@
 package com.dentalmoovi.website.services;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -42,6 +42,7 @@ public class OrdersSer {
     private final ActivityLogsRep activityLogsRep;
     private final RestTemplate restTemplate;
     private final EnterprisesRep enterprisesRep;
+    private final OrdersSer orderSer;
 
     @Value("${server.orderService}")
     private String orderServiceUrl;
@@ -49,10 +50,11 @@ public class OrdersSer {
 
     Orders order;
     Users user;
-
+    
     public OrdersSer(OrdersRep ordersRep, ProductsSer productsSer, AddressesRep addressesRep,
             DepartamentsRep departamentsRep, MunicipalyRep municipalyRep, UserSer userSer,
-            ActivityLogsRep activityLogsRep, RestTemplate restTemplate, EnterprisesRep enterprisesRep) {
+            ActivityLogsRep activityLogsRep, RestTemplate restTemplate, EnterprisesRep enterprisesRep,
+            @Lazy OrdersSer orderSer) {
         this.ordersRep = ordersRep;
         this.productsSer = productsSer;
         this.addressesRep = addressesRep;
@@ -62,11 +64,12 @@ public class OrdersSer {
         this.activityLogsRep = activityLogsRep;
         this.restTemplate = restTemplate;
         this.enterprisesRep = enterprisesRep;
+        this.orderSer = orderSer;
     }
 
     public MessageDTO generateOrder(CartRequest req, long idAddress, boolean admin){
         this.admin = admin;
-        generatePdf(req, idAddress);
+        orderSer.generatePdf(req, idAddress); //Call async methods via an injected dependency instead of directly via 'this'.sonarlint(java:S6809)
         return new MessageDTO("Order generated successfully");
     }
 
@@ -116,12 +119,10 @@ public class OrdersSer {
         return new MessageDTO("Status Order updated");
     }
 
-    private void generatePdf(CartRequest req, long idAddress) /* throws IOException, DocumentException */{
-
+    @Async("taskExecutor")
+    public void generatePdf(CartRequest req, long idAddress) /* throws IOException, DocumentException */{
         OrderFormat orderData = getOrderData(req, idAddress);
-
         restTemplate.postForEntity(orderServiceUrl+"/generate", orderData, Void.class);
-
     }
 
     private OrderFormat getOrderData(CartRequest req, long idAddress){
@@ -138,10 +139,10 @@ public class OrdersSer {
 
         CartResponse cartResponse = productsSer.getShoppingCartProducts(req, admin, true);
         
-        String date = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-        String hour = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
+        String date = Utils.getNow().toLocalDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        String hour = Utils.getNow().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"));
 
-        String enterpriseName = Utils.getEnterprise(user.idEnterprise(), enterprisesRep).name();
+        String enterpriseName = user.idEnterprise() != null ? Utils.getEnterprise(user.idEnterprise(), enterprisesRep).name() : "";
         
         return new OrderFormat(
                 order.id(), user.firstName(), user.lastName(), address.phone(), date, hour, departament.name(), 

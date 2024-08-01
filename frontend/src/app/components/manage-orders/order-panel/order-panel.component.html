@@ -16,13 +16,16 @@
             </button>
 
             <div *ngIf="isAdmin" class="edit-buttons">
-                <button [ngClass]="{'pending': typeOrder == 'Pendiente','no-pending':  typeOrder != 'Pendiente'}">
+                <button (click)="updateOrderStatus(typeOrder != 'Pendiente', order.idOrder!, 'PENDING')"
+                    [ngClass]="{'pending': typeOrder == 'Pendiente','no-pending':  typeOrder != 'Pendiente'}">
                     <i class="material-icons">pending_actions</i>
                 </button>
-                <button [ngClass]="{'complete': typeOrder == 'Completado','no-complete':  typeOrder != 'Completado'}">
+                <button (click)="updateOrderStatus(typeOrder != 'Completado', order.idOrder!, 'COMPLETE')"
+                    [ngClass]="{'complete': typeOrder == 'Completado','no-complete':  typeOrder != 'Completado'}">
                     <i class="material-icons">task</i>
                 </button>
-                <button [ngClass]="{'cancel': typeOrder == 'Cancelado','no-cancel':  typeOrder != 'Cancelado'}">
+                <button (click)="updateOrderStatus(typeOrder != 'Cancelado', order.idOrder!, 'CANCEL')"
+                    [ngClass]="{'cancel': typeOrder == 'Cancelado','no-cancel':  typeOrder != 'Cancelado'}">
                     <i class="material-icons">cancel</i>
                 </button>
             </div>
