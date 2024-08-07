@@ -3,9 +3,11 @@ package com.dentalmoovi.website.repositories;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.dentalmoovi.website.models.entities.Products;
 
@@ -27,6 +29,8 @@ public interface ProductsRep extends CrudRepository<Products,Long>{
     @Query("SELECT EXISTS(SELECT 1 FROM orders_products WHERE id_product = :productId)")
     boolean existsRelacionsProduct(@Param("productId") Long id);
 
+    @Modifying
+    @Transactional
     @Query("DELETE FROM orders_products WHERE id_product = :productId")
     void deleteRelacionsProduct(@Param("productId") Long id);
 
