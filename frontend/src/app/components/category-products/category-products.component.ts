@@ -142,7 +142,7 @@ export class CategoryProductsComponent {
           console.log('Acción cancelada');
         }
       });
-    }else window.alert('Por favor escribe algo en el capo de texto para realizar esa acción.');
+    }else window.alert('Por favor escribe algo en el campo de texto para realizar esa acción.');
   }
 
   updateCategoryLocation(categoryName:string){

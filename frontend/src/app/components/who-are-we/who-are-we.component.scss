@@ -1,0 +1,34 @@
+.all-page{
+    position: relative;
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    font-size: medium;
+    h1{
+        text-align: center;
+        font-weight:500;
+        color: #a83fe1;
+    }
+
+    .mission-vision{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: auto;
+        div{
+            height: 100%;
+            width: 50%;
+            padding-left: 30px;
+            padding-right: 30px;
+
+            h2{
+                text-align: center;
+            }
+            p{
+                text-align: justify;
+            }
+        }
+    }
+}

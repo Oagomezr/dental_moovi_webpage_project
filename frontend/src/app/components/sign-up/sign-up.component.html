@@ -50,8 +50,17 @@
             <app-cel-phone-field [formCelphone]="userFormGroup.controls.celPhone"></app-cel-phone-field>
             <app-password-field *ngIf="!isAdmin" [formPassword]="userFormGroup.controls.password"></app-password-field>
         </div> 
+
+        <mat-checkbox [formControl]="accept">
+            Acepto la <a href="/dataPolicy" target="_blank">Política de Tratamiento de Datos</a>.
+        </mat-checkbox>
+        
     
-        <button class="signup-button" type="submit" mat-raised-button color="primary" [disabled]="!isAdmin && userFormGroup.invalid">Crear usuario</button>
+        <button class="signup-button" type="submit" 
+            mat-raised-button color="primary" 
+            [disabled]="(!isAdmin && userFormGroup.invalid) || !accept.value">
+            Crear usuario
+        </button>
     </form>
 </div>
     

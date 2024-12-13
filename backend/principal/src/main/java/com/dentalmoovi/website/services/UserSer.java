@@ -140,6 +140,11 @@ public class UserSer {
         return Utils.getUserByEmail(getUsername(), userRep);
     }
 
+    public boolean getIsAdmin(){
+        String userDetails = getUserDetails(getUsername());
+        return userDetails.charAt(0) == 'A';
+    }
+
     public UserDTO getUserAuthDTO(){
         Users user = getUserAuthenticated();
         return getUserDTO(user);

@@ -108,16 +108,17 @@ public class ProductsController {
         try{
             return ResponseEntity.ok(productsSer.deleteProduct(id));
         } catch (Exception e) {
-            Utils.showMessage("The imagen could not delete because: "+e.getMessage());
+            Utils.showMessage("The product could not delete because: "+e.getMessage());
             return ResponseEntity.notFound().build();
         }
     }
 
-    @PutMapping("/api/admin/products/visibility/{productName}")
-    public ResponseEntity<MessageDTO> changeVisibilityProduct(@PathVariable("productName") String productName, @RequestBody boolean visibility) {
+    @PutMapping("/api/admin/products/visibility/{idProducts}")
+    public ResponseEntity<MessageDTO> changeVisibilityProduct(@PathVariable("idProducts") Long idProducts, @RequestBody boolean visibility) {
         try{
-            return ResponseEntity.ok(productsSer.hideOrShowProduct(visibility, productName));
+            return ResponseEntity.ok(productsSer.hideOrShowProduct(visibility, idProducts));
         } catch (Exception e) {
+            Utils.showMessage("Error to change visibility: "+e.getMessage());
             return ResponseEntity.notFound().build();
         }
     }

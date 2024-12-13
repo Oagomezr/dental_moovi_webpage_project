@@ -22,6 +22,7 @@ public class OrderController {
             orderSer.generateOrder(orderData);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }

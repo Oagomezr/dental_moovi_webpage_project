@@ -36,7 +36,6 @@ export class OrderAdminComponent {
   ref:string | null = localStorage.getItem('isLogged');
 
   ngOnInit(){
-    if(!this.isAdmin) this.router.navigate(['']); 
     
     this.userService.getUsers().subscribe({
       next: r =>{

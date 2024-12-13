@@ -47,6 +47,7 @@ public class UserController {
             userSer.createUsers(userDTO);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (Exception e) {
+            Utils.showMessage("Error to create user: "+e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
@@ -216,6 +217,16 @@ public class UserController {
     public ResponseEntity<UserResponse> getUsers(){
         try {
             UserResponse response = userSer.getUsers();
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/api/user/permission")
+    public ResponseEntity<Boolean> getPermision(){
+        try {
+            Boolean response = userSer.getIsAdmin();
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();

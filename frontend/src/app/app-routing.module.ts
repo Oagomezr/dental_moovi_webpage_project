@@ -14,6 +14,10 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
 import { ForgottenPwComponent } from './components/forgotten-pw/forgotten-pw.component';
 import { ManageOrdersComponent } from './components/manage-orders/manage-orders.component';
 import { OrderAdminComponent } from './components/order-admin/order-admin.component';
+import { WhoAreWeComponent } from './components/who-are-we/who-are-we.component';
+import { DataPolicyComponent } from './components/data-policy/data-policy.component';
+import { TermsConditionsComponent } from './components/terms-conditions/terms-conditions.component';
+import { tokenGuard } from './core/guards/token.guard';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -27,8 +31,11 @@ const routes: Routes = [
   { path: 'settings/addresses', component: EditAddressesComponent },
   { path: 'settings/addresses/:user/:address', component: EditAddressComponent },
   { path: 'orderDetails', component: OrderDetailsComponent },
-  { path: 'orderAdmin', component: OrderAdminComponent },
+  { path: 'orderAdmin', component: OrderAdminComponent, canActivate: [tokenGuard], data: { role: 'admin' }  },
   { path: 'manageOrders', component: ManageOrdersComponent },
+  { path: 'whoAreWe', component: WhoAreWeComponent },
+  { path: 'dataPolicy', component: DataPolicyComponent },
+  { path: 'termsConditions', component: TermsConditionsComponent },
   { path: '**', component: PageNotFoundComponent },
 ];
 

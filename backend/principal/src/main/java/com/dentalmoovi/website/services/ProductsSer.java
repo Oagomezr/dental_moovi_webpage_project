@@ -366,9 +366,9 @@ public class ProductsSer {
     @CacheEvict(
         cacheNames = {"getProducsByContaining", "getProduct", "productsByCategory"}, 
         allEntries = true)
-    public MessageDTO hideOrShowProduct(boolean visibility, String productName){
+    public MessageDTO hideOrShowProduct(boolean visibility, Long idProduct){
 
-        Products product = productsRep.findByName(productName)
+        Products product = productsRep.findById(idProduct)
             .orElseThrow(() -> new RuntimeException(productNotFound));
 
         Users user = userSer.getUserAuthenticated();
@@ -505,8 +505,8 @@ public class ProductsSer {
             }
 
             if (pdf) {
-                cartPrizePDF = String.format("%,.2f", product.unitPrice());
-                cartSubtotalPDF = String.format("%,.2f", product.unitPrice()*elem.amount());
+                cartPrizePDF = String.format("%,.0f", product.unitPrice());
+                cartSubtotalPDF = String.format("%,.0f", product.unitPrice()*elem.amount());
             }else{
                 cartPrize = product.unitPrice();
                 cartSubtotal = product.unitPrice()*elem.amount();

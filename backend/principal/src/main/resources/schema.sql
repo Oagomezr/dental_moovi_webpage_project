@@ -1,9 +1,3 @@
-/* CREATE DATABASE IF NOT EXISTS prueba;
-USE prueba;
-DROP DATABASE dental_moovi;
-CREATE DATABASE dental_moovi;
-
-USE dental_moovi; */
 
 CREATE TABLE IF NOT EXISTS categories (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,

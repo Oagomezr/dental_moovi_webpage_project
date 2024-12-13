@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.3.final using JasperReports Library version 6.21.3-4a3078d20785ebe464f18037d738d12fc98c13cf  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_Letter" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d6d61f6c-2eba-4c7c-8378-9c57a3f45cdf">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<style name="Table 1_TH" mode="Opaque" backcolor="#DEEFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#02A1FF"/>
+			<topPen lineWidth="0.5" lineColor="#02A1FF"/>
+			<leftPen lineWidth="0.5" lineColor="#02A1FF"/>
+			<bottomPen lineWidth="0.5" lineColor="#02A1FF"/>
+			<rightPen lineWidth="0.5" lineColor="#02A1FF"/>
+		</box>
+	</style>
+	<style name="Table 1_CH" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#02A1FF"/>
+			<topPen lineWidth="0.5" lineColor="#02A1FF"/>
+			<leftPen lineWidth="0.5" lineColor="#02A1FF"/>
+			<bottomPen lineWidth="0.5" lineColor="#02A1FF"/>
+			<rightPen lineWidth="0.5" lineColor="#02A1FF"/>
+		</box>
+	</style>
+	<style name="Table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#02A1FF"/>
+			<topPen lineWidth="0.5" lineColor="#02A1FF"/>
+			<leftPen lineWidth="0.5" lineColor="#02A1FF"/>
+			<bottomPen lineWidth="0.5" lineColor="#02A1FF"/>
+			<rightPen lineWidth="0.5" lineColor="#02A1FF"/>
+		</box>
+	</style>
+	<subDataset name="DatosCliente" uuid="88006b19-3da7-45c9-b146-242a4b46b691">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="customerName" class="java.lang.String">
+			<fieldDescription><![CDATA[Oscar Alberto]]></fieldDescription>
+		</field>
+		<field name="customerLastName" class="java.lang.String">
+			<fieldDescription><![CDATA[Gomez Rodriguez]]></fieldDescription>
+		</field>
+		<field name="celPhone" class="java.lang.String">
+			<fieldDescription><![CDATA[3202148944]]></fieldDescription>
+		</field>
+		<field name="date" class="java.lang.String">
+			<fieldDescription><![CDATA[12-12-2024]]></fieldDescription>
+		</field>
+		<field name="hour" class="java.lang.String">
+			<fieldDescription><![CDATA[17:32]]></fieldDescription>
+		</field>
+		<field name="departament" class="java.lang.String">
+			<fieldDescription><![CDATA[Bogotá]]></fieldDescription>
+		</field>
+		<field name="location" class="java.lang.String">
+			<fieldDescription><![CDATA[Bogotá]]></fieldDescription>
+		</field>
+		<field name="address" class="java.lang.String">
+			<fieldDescription><![CDATA[cra 97b #157a -02]]></fieldDescription>
+		</field>
+		<field name="enterprise" class="java.lang.String">
+			<fieldDescription><![CDATA[Dental Moovi]]></fieldDescription>
+		</field>
+	</subDataset>
+	<subDataset name="DatosProducto" uuid="f9597bde-bc99-4817-acd2-184536e2e6c1">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="productName" class="java.lang.String"/>
+		<field name="prizePDF" class="java.lang.String"/>
+		<field name="amount" class="java.lang.Integer"/>
+		<field name="subtotalPDF" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="celPhone" class="java.lang.String"/>
+	<parameter name="orderNumber" class="java.lang.Long"/>
+	<parameter name="date" class="java.lang.String"/>
+	<parameter name="hour" class="java.lang.String"/>
+	<parameter name="productDataSource" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<parameter name="departament" class="java.lang.String"/>
+	<parameter name="customerLastName" class="java.lang.String"/>
+	<parameter name="location" class="java.lang.String"/>
+	<parameter name="total" class="java.lang.String"/>
+	<parameter name="enterprise" class="java.lang.String"/>
+	<parameter name="address" class="java.lang.String"/>
+	<parameter name="customerName" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="orderNumber" class="java.lang.String">
+		<fieldDescription><![CDATA[1234]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="129" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="10" width="150" height="90" isPrintWhenDetailOverflows="true" uuid="24558599-0281-40ba-a307-7b6e86637877">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA["reports/images/logo-Dentalmoovi.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="0" y="100" width="150" height="14" forecolor="#A83FE1" uuid="bce1a45f-7b9f-4497-8bdd-26e2001a71c8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Cotización N°: "+$P{orderNumber}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="155" y="5" width="41" height="18" uuid="e55de770-88fa-41bb-94d9-670b95f515fe">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cliente:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="154" y="35" width="42" height="18" uuid="f426bd11-9952-4e3e-aa0a-b566f5f72ae8">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Celular:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="157" y="64" width="39" height="18" uuid="41e18c38-e442-4f37-856b-650f723669fd"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="166" y="94" width="30" height="20" uuid="ebfe8234-325c-4f7b-b9be-7c41e084207e"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Hora:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="197" y="40" width="127" height="10" uuid="30ea0176-7aa1-4b8e-8713-e3813b1662de"/>
+				<box leftPadding="5"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{celPhone}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="197" y="1" width="150" height="27" uuid="f3b5b6c1-a78a-4b9f-a8d0-29eef76927e0"/>
+				<box leftPadding="5"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{customerName}+"\n"+$P{customerLastName}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="197" y="69" width="150" height="10" uuid="544051ae-4c63-4074-b2ae-55ddab8fa436"/>
+				<box leftPadding="5"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{date}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="195" y="100" width="150" height="10" uuid="17513532-3a94-48be-8fdf-9fe4e98661be"/>
+				<box leftPadding="5"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{hour}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="330" y="34" width="90" height="18" uuid="120e6764-59b7-4cc2-85a4-f138b90f9d02">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Departamento:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="360" y="64" width="60" height="18" uuid="bdb0650e-4f39-4018-b898-833b2a3a8e48">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Municipio:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="360" y="93" width="60" height="18" uuid="dad44273-79b0-4de0-af26-c046e9574351"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dirección:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="360" y="5" width="60" height="18" uuid="d359f9a3-3bf7-4131-b546-f232eb37a363"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Empresa:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="421" y="69" width="149" height="10" uuid="e5bdedab-403f-4c51-b265-bf7dc6e5050d"/>
+				<box leftPadding="5"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{location}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="421" y="98" width="149" height="10" uuid="a3a81ea0-0274-4a3a-b03d-db86f821b06d"/>
+				<box leftPadding="5"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{address}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="421" y="1" width="149" height="27" uuid="c7f3b2bf-39b5-4675-b230-b61b30f005a6"/>
+				<box leftPadding="5"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{enterprise}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="421" y="39" width="149" height="10" uuid="bcd504ca-ce7d-43f0-a791-33e0f7f7f812"/>
+				<box leftPadding="5"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{departament}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="74" splitType="Stretch">
+			<componentElement>
+				<reportElement x="1" y="10" width="580" height="60" uuid="f1428fca-ee15-41a0-b710-192eaf47fea0">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 1_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 1_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table 1_TD"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="DatosProducto" uuid="96eb52be-6e6d-47c0-982e-1aedb792a09f">
+						<dataSourceExpression><![CDATA[$P{productDataSource}]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="330" uuid="601797f2-6556-44b7-9d63-81fff35e19b4">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="330" height="30" forecolor="#2E53FE" uuid="8b5c1e8d-ae0c-4825-8433-b340bf9316c8"/>
+								<textElement textAlignment="Left" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[ Nombre del producto]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 1_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="330" height="30" uuid="c837f530-d135-4b81-92f6-261751720502"/>
+								<textElement textAlignment="Left" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[" "+$F{productName}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="80" uuid="86e85a67-65ad-4b31-80e3-0ce3e70a017a">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="80" height="30" forecolor="#2E53FE" uuid="e90e43f6-f56a-4171-a46f-98002a55a0a5"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Precio]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 1_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="80" height="30" uuid="9b00cd78-188b-4f39-897e-91317533a3b1"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{prizePDF}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="70" uuid="9cf9c444-68d9-4e9e-8f89-e0ad7b9be829">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="70" height="30" forecolor="#2E53FE" uuid="b1bd7582-a011-4037-943a-6c2318bf6891"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Cantidad]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 1_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="70" height="30" uuid="f5e7b175-8483-453d-9a8c-7b17d3d82219"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="90" uuid="223715a4-c2d7-4436-aa82-55a7369a45a4">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="30" forecolor="#2E53FE" uuid="167d2b22-925c-4d45-a129-8b19d68a2ee7"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[SubTotal]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 1_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="90" height="30" uuid="a1a544d0-4881-459a-8ce6-cb473b4dfd20"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{subtotalPDF}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="32" splitType="Stretch">
+			<staticText>
+				<reportElement x="430" y="0" width="51" height="20" uuid="09d5c8f2-933a-4541-bc03-3ce94b79409e"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="DejaVu Sans" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="481" y="0" width="89" height="20" uuid="691eb017-943b-4211-ab3a-205ede4d649a"/>
+				<box leftPadding="5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{total}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="92" splitType="Stretch">
+			<staticText>
+				<reportElement x="6" y="0" width="270" height="18" uuid="3f8d2bee-2476-448b-b5ab-cfb9905f903f">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Terminos y condiciones:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="6" y="18" width="270" height="18" uuid="1d089888-1058-4ec3-a346-2eb2506314e1">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Devoluciones solo para cambios, no reembolsos.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="6" y="36" width="270" height="18" uuid="ad2632c2-cd90-49a3-b77c-6f0f9cabccd8">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Despues de 10 dias habiles no se aceptan devoluciones.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="7" y="54" width="270" height="26" uuid="20281cfa-c60a-4a11-a668-3f9553f15993">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Favor enviar soporte de pago por whatsapp o correo electronico.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="298" y="18" width="270" height="18" uuid="308f8fcd-f4dd-40e0-b2ed-fa8d21b070dc">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Av cra 104 # 140a 52 Piso 2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="298" y="36" width="270" height="18" uuid="8308d42a-73cb-459a-9f4c-bf589285eaf3">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Ventas@dentalmoovi.com]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="298" y="54" width="270" height="18" uuid="4003b7d1-1051-4219-9ada-3bf7c8770a35">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Whatsapp: +57 314-453-64-35]]></text>
+			</staticText>
+		</band>
+		<band height="50">
+			<staticText>
+				<reportElement x="6" y="5" width="270" height="18" uuid="481dfbc1-ee54-4cb2-9044-01b99e8c26af">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Formas de pago:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="6" y="24" width="270" height="18" uuid="d20e43d6-18ee-4e77-9888-beb37e633286">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Bancolombia: 547-000028-13]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="296" y="24" width="270" height="18" uuid="16d7872e-96bd-455a-bca4-07431ccb31b7">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<box leftPadding="0">
+					<topPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Firma]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

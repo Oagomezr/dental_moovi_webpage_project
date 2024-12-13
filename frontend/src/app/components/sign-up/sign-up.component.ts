@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { UsersService } from 'src/app/services/user/users.service';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { uniqueValueValidator } from 'src/app/validators/userFieldsValidator';
 import { Router } from '@angular/router';
 import { AsyncPipe, CommonModule } from '@angular/common';
@@ -20,6 +20,8 @@ import { Enum1 } from 'src/app/models/enums/enum1/enum1';
 import { NamesFieldComponent } from '../form-fields-components/names-field/names-field.component';
 import { AutocompleteFieldComponent } from '../form-fields-components/autocomplete-field/autocomplete-field.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+
 
 @Component({
     selector: 'app-sign-up',
@@ -30,7 +32,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
       CommonModule, MatFormFieldModule, ReactiveFormsModule, DateFieldComponent, AutocompleteFieldComponent,
       SelectorFieldComponent, CelPhoneFieldComponent, PasswordFieldComponent, ConfirmCodeFieldComponent, 
       MatInputModule, MatButtonModule, MatSelectModule, MatDatepickerModule, MatAutocompleteModule,
-      MatNativeDateModule, MatIconModule, NamesFieldComponent, AsyncPipe]
+      MatNativeDateModule, MatIconModule, NamesFieldComponent, AsyncPipe, MatCheckboxModule]
 })
 export class SignUpComponent {
 
@@ -85,6 +87,8 @@ export class SignUpComponent {
   confirm : boolean = false;
 
   email : string = '';
+
+  accept : FormControl = new FormControl(false);
 
   constructor(private userService: UsersService, private router: Router){}
 

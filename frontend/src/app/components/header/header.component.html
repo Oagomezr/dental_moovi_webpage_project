@@ -12,7 +12,7 @@
                     </div>
                 </div>
                 <div *ngIf="products != []" class="products-found">
-                    <a class="products" *ngFor="let product of products" [href]="'/product/'+product.nameProduct">
+                    <a class="products" *ngFor="let product of products" [href]="'/product/'+product.id">
                         <div class="img-container">
                             <img *ngIf="product.images.length == 0" src="assets/images/productWithoutImage.png" alt="">
                             <img *ngIf="product.images.length > 0" [src]="'data:image/'+product.images[0].contentType+';base64,'+product.images[0].imageBase64" alt="">
@@ -78,9 +78,8 @@
                     </button>
                     <app-hover-box-products [hidden]="showHoverBoxProducts" [categories]="categories"></app-hover-box-products>
                 </div>
-                <a>QUIENES SOMOS</a>
-                <a>SEDE</a>
-                <a>CONTACTENOS</a>
+                <a href="/whoAreWe">QUIENES SOMOS</a>
+                <a href="/termsConditions">TERMINOS Y CONDICIONES</a>
             </div>
             <div class="cart" (mouseover)="showBoxCart(true)" (mouseout)="showBoxCart(false)" (focus)="showBoxProducts(true)" (blur)="showBoxProducts(false)">
                 <app-cart-badge [amountOfProducts]="cartSer.cartResponse.amountOfProducts"></app-cart-badge>

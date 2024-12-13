@@ -1,4 +1,4 @@
-package com.dentalmoovi.order_service.models;
+package com.dentalmoovi.order_service.models.dto;
 
 public record ImagesDTO(
     long id,

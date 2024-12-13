@@ -164,7 +164,7 @@ export class ProductComponent {
   }
 
   changeVisibility(visibility:boolean){
-    this.productSer.updateVisibility(visibility, this.product.nameProduct).subscribe({
+    this.productSer.updateVisibility(visibility, this.product.id).subscribe({
       next: ()=>{
         window.location.reload();
       },

@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { CartDtoRequest } from 'src/app/models/cart/cartStore';
 import { ProductsData } from 'src/app/models/products/productsData';
 import { ProductsService } from 'src/app/services/products/products.service';
+import { DialogComponent } from '../../dialog/dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-products',
@@ -15,7 +16,7 @@ import { ProductsService } from 'src/app/services/products/products.service';
 })
 export class ProductsComponent {
 
-    constructor(private productsSer: ProductsService, private router: Router) {}
+    constructor(private productsSer: ProductsService, public dialog: MatDialog) {}
 
     ngOnInit() { this.getProducts(); }
 
@@ -131,6 +132,25 @@ export class ProductsComponent {
                 window.location.reload();
             },error: e=>{
                 console.log(e.error.message);
+            }
+        });
+    }
+
+    openDialog(nameProduct:string, id:number){//delete all spaces at the start and allow only one space between letters
+    
+        const dialogRef = this.dialog.open(DialogComponent, {
+            width: '250px',
+            data: {
+                title: 'Confirmación',
+                message: 'Segur@ que desea eliminar el producto: '+nameProduct
+            }
+        });
+    
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.deleteProduct(id);
+            } else {
+                console.log('Acción cancelada');
             }
         });
     }

@@ -47,8 +47,8 @@ export class ProductsService {
     return this.http.delete<message>(`${environment.url_back}/admin/products/deleteImage/${parameter}`, {withCredentials:true});
   }
 
-  updateVisibility(visibility: boolean, productName: string): Observable<message>{
-    return this.http.put<message>(`${environment.url_back}/admin/products/visibility/${productName}`, !visibility, {withCredentials:true});
+  updateVisibility(visibility: boolean, idProduct: number): Observable<message>{
+    return this.http.put<message>(`${environment.url_back}/admin/products/visibility/${idProduct}`, !visibility, {withCredentials:true});
   }
 
   updateProductInfo(option: number, idProduct: number, newInfo: string): Observable<message>{

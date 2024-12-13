@@ -13,7 +13,7 @@ export class AuthenticateService {
 
   private count: number = 0;
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   login(userAuth: UserAuth): Observable<any> {
     return this.http.post<any>(`${environment.url_back}/public/login`, userAuth);
@@ -29,6 +29,10 @@ export class AuthenticateService {
   
   uPw(data:CPW, ref:string): Observable<message>{
     return this.http.put<message>(`${environment.url_back}/user/upw/${ref}`, data, {withCredentials:true});
+  }
+
+  permission(){
+    return this.http.get<boolean>(`${environment.url_back}/user/permission`, {withCredentials:true});
   }
 
   logoutAction(){
@@ -52,4 +56,6 @@ export class AuthenticateService {
       window.location.reload();
     }
   }
+
+  
 }
