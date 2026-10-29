@@ -31,7 +31,9 @@ services:
       - internal
 
   dentalnotifications:
-    build: ./BackEnd/notifications_service
+    image: oscargomezro/dentalnotification:1.0
+    ports:
+      - ${NOTIFICATION_PORT}
     environment:
       SPRING_PORT_NOTIFICATIONS: ${SPRING_PORT_NOTIFICATIONS}
       SPRING_ADDRESS_SERVER: ${SPRING_ADDRESS_SERVER}

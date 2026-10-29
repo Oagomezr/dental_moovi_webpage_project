@@ -1,8 +1,11 @@
 package com.dentalmoovi.notifications_service.models;
 
+import java.util.List;
+
 public record EmailData(
-    String to,
+    List<String> to,
     String subject,
-    String body
+    String body,
+    String whoSend
 ) {} 
 

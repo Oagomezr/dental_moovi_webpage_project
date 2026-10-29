@@ -45,7 +45,7 @@ public class NotificationController {
     @PostMapping("/sendEmail")
     public ResponseEntity<Void> sendEmail(@RequestBody EmailData emailData){
         try {
-            notificationSer.sendEmailNotificationCode(emailData);
+            notificationSer.sendEmail(emailData);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);

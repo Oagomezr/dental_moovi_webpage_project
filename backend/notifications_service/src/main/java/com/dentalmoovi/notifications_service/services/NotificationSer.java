@@ -17,8 +17,8 @@ public class NotificationSer {
     }
 
     public void sendEmailNotificationCode(EmailData data){
-        String retrictReplay = cacheSer.getFromReplayCodeRestrict(data.to());
-        if (retrictReplay !=null && retrictReplay.equals(data.to())) return;
+        String retrictReplay = cacheSer.getFromReplayCodeRestrict(data.to().get(0));
+        if (retrictReplay !=null && retrictReplay.equals(data.to().get(0))) return;
 
         String formattedNumber = Utils.generateRandom6Number();
 
@@ -26,11 +26,11 @@ public class NotificationSer {
 
         body += formattedNumber;
         
-        cacheSer.addToOrUpdateRegistrationCache(data.to(), formattedNumber);
-        cacheSer.addToOrUpdateReplayCodeRestrict(data.to(), data.to());
+        cacheSer.addToOrUpdateRegistrationCache(data.to().get(0), formattedNumber);
+        cacheSer.addToOrUpdateReplayCodeRestrict(data.to().get(0), data.to().get(0));
 
         try {
-            emailSer.sendEmail(data.to(), data.subject(), body);
+            emailSer.sendEmail(data.to(), data.subject(), body, data.whoSend());
         } catch (Exception e) {
             // Manage the exception in case it cannot send the email
             e.printStackTrace();
@@ -47,7 +47,7 @@ public class NotificationSer {
 
     public void sendEmail(EmailData data){
         try {
-            emailSer.sendEmail(data.to(), data.subject(), data.body());
+            emailSer.sendEmail(data.to(), data.subject(), data.body(), data.whoSend());
         } catch (Exception e) {
             // Manage the exception in case it cannot send the email
             e.printStackTrace();

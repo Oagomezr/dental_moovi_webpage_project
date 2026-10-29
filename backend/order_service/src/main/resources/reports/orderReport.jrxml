@@ -106,7 +106,7 @@
 			<textField>
 				<reportElement x="0" y="100" width="150" height="14" forecolor="#A83FE1" uuid="bce1a45f-7b9f-4497-8bdd-26e2001a71c8"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Calibri" size="10" isBold="true"/>
+					<font fontName="DejaVu Sans" size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Cotización N°: "+$P{orderNumber}]]></textFieldExpression>
 			</textField>
@@ -146,7 +146,7 @@
 				<reportElement x="197" y="40" width="127" height="10" uuid="30ea0176-7aa1-4b8e-8713-e3813b1662de"/>
 				<box leftPadding="5"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="8"/>
+					<font fontName="DejaVu Sans Condensed" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{celPhone}]]></textFieldExpression>
 			</textField>
@@ -154,7 +154,7 @@
 				<reportElement x="197" y="1" width="150" height="27" uuid="f3b5b6c1-a78a-4b9f-a8d0-29eef76927e0"/>
 				<box leftPadding="5"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="8"/>
+					<font fontName="DejaVu Sans Condensed" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{customerName}+"\n"+$P{customerLastName}]]></textFieldExpression>
 			</textField>
@@ -162,7 +162,7 @@
 				<reportElement x="197" y="69" width="150" height="10" uuid="544051ae-4c63-4074-b2ae-55ddab8fa436"/>
 				<box leftPadding="5"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="8"/>
+					<font fontName="DejaVu Sans Condensed" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{date}]]></textFieldExpression>
 			</textField>
@@ -170,7 +170,7 @@
 				<reportElement x="195" y="100" width="150" height="10" uuid="17513532-3a94-48be-8fdf-9fe4e98661be"/>
 				<box leftPadding="5"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="8"/>
+					<font fontName="DejaVu Sans Condensed" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{hour}]]></textFieldExpression>
 			</textField>
@@ -210,7 +210,7 @@
 				<reportElement x="421" y="69" width="149" height="10" uuid="e5bdedab-403f-4c51-b265-bf7dc6e5050d"/>
 				<box leftPadding="5"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="8"/>
+					<font fontName="DejaVu Sans Condensed" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{location}]]></textFieldExpression>
 			</textField>
@@ -218,7 +218,7 @@
 				<reportElement x="421" y="98" width="149" height="10" uuid="a3a81ea0-0274-4a3a-b03d-db86f821b06d"/>
 				<box leftPadding="5"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="8"/>
+					<font fontName="DejaVu Sans Condensed" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{address}]]></textFieldExpression>
 			</textField>
@@ -226,7 +226,7 @@
 				<reportElement x="421" y="1" width="149" height="27" uuid="c7f3b2bf-39b5-4675-b230-b61b30f005a6"/>
 				<box leftPadding="5"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="8"/>
+					<font fontName="DejaVu Sans Condensed" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{enterprise}]]></textFieldExpression>
 			</textField>
@@ -234,7 +234,7 @@
 				<reportElement x="421" y="39" width="149" height="10" uuid="bcd504ca-ce7d-43f0-a791-33e0f7f7f812"/>
 				<box leftPadding="5"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="8"/>
+					<font fontName="DejaVu Sans Condensed" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{departament}]]></textFieldExpression>
 			</textField>
@@ -346,7 +346,7 @@
 				<reportElement x="481" y="0" width="89" height="20" uuid="691eb017-943b-4211-ab3a-205ede4d649a"/>
 				<box leftPadding="5"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="10" isBold="true"/>
+					<font fontName="DejaVu Sans Condensed" size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{total}]]></textFieldExpression>
 			</textField>

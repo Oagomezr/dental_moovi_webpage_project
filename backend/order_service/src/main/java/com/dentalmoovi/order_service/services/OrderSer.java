@@ -74,7 +74,7 @@ public class OrderSer {
         return JasperExportManager.exportReportToPdf(jasperPrint);
     }
 
-    public String capitalizeFirstLetters(String input) {
+    private String capitalizeFirstLetters(String input) {
         if (input == null || input.isEmpty()) {
             return input;
         }
